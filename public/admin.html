@@ -80,6 +80,8 @@
     </div>
 
     <script type="module">
+      import { formatDateTime } from '/textpile-utils.js';
+
       let TOKEN = "";
 
       document.getElementById("login-form").addEventListener("submit", async (e) => {
@@ -167,8 +169,8 @@
                   <tr>
                     <td><input type="checkbox" class="post-checkbox" data-id="${post.id}" /></td>
                     <td><a href="${post.url}" target="_blank">${escapeHtml(post.title)}</a>${post.pinned ? ' 📌' : ''}</td>
-                    <td class="small">${new Date(post.createdAt).toLocaleString()}</td>
-                    <td class="small">${post.expiresAt ? new Date(post.expiresAt).toLocaleString() : 'Never'}</td>
+                    <td class="small">${formatDateTime(post.createdAt)}</td>
+                    <td class="small">${post.expiresAt ? formatDateTime(post.expiresAt) : 'Never'}</td>
                     <td class="small">${(post.size / 1024).toFixed(1)} KB</td>
                     <td><button class="delete-post-btn" data-id="${post.id}">Delete</button></td>
                   </tr>

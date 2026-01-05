@@ -1,0 +1,293 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Date Formatter Test Suite</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 1200px;
+      margin: 2rem auto;
+      padding: 0 1rem;
+    }
+    .test-section {
+      margin: 2rem 0;
+      border: 1px solid #ddd;
+      padding: 1rem;
+      border-radius: 4px;
+    }
+    .test-section h2 {
+      margin-top: 0;
+    }
+    .test-result {
+      display: flex;
+      justify-content: space-between;
+      padding: 0.5rem;
+      margin: 0.25rem 0;
+      border-radius: 2px;
+    }
+    .test-result.pass {
+      background: #e6ffe6;
+    }
+    .test-result.fail {
+      background: #ffe6e6;
+    }
+    .test-result .format {
+      font-family: monospace;
+      font-weight: bold;
+    }
+    .test-result .output {
+      font-family: monospace;
+      color: #666;
+    }
+    .summary {
+      font-size: 1.2rem;
+      font-weight: bold;
+      padding: 1rem;
+      margin: 1rem 0;
+      border-radius: 4px;
+    }
+    .summary.success {
+      background: #e6ffe6;
+      color: #006600;
+    }
+    .summary.failure {
+      background: #ffe6e6;
+      color: #cc0000;
+    }
+  </style>
+</head>
+<body>
+  <h1>Textpile Date Formatter Test Suite</h1>
+  <div id="test-results"></div>
+
+  <script type="module">
+    import { formatDate, formatTime, formatDateTime, DEFAULT_DATE_FORMAT, DEFAULT_TIME_FORMAT } from './date-formatter.js';
+
+    // Test date: January 4, 2026 13:23:45
+    const testDate = '2026-01-04T13:23:45Z';
+
+    let passCount = 0;
+    let failCount = 0;
+    const results = [];
+
+    function runTest(description, format, expectedOutput, testFn) {
+      const actual = testFn();
+      const passed = actual === expectedOutput;
+
+      if (passed) {
+        passCount++;
+      } else {
+        failCount++;
+      }
+
+      results.push({
+        description,
+        format,
+        expected: expectedOutput,
+        actual,
+        passed
+      });
+
+      return passed;
+    }
+
+    // Test Suite 1: Basic Date Formats
+    console.log('=== Test Suite 1: Basic Date Formats ===');
+
+    runTest('ISO 8601 date', 'YYYY-MM-DD', '2026-01-04',
+      () => formatDate(testDate, 'YYYY-MM-DD'));
+
+    runTest('US numeric date', 'M/D/YYYY', '1/4/2026',
+      () => formatDate(testDate, 'M/D/YYYY'));
+
+    runTest('US date with month name', 'MMM D, YYYY', 'Jan 4, 2026',
+      () => formatDate(testDate, 'MMM D, YYYY'));
+
+    runTest('European date', 'DD/MM/YYYY', '04/01/2026',
+      () => formatDate(testDate, 'DD/MM/YYYY'));
+
+    runTest('German date', 'DD.MM.YYYY', '04.01.2026',
+      () => formatDate(testDate, 'DD.MM.YYYY'));
+
+    runTest('Long month name', 'MMMM D, YYYY', 'January 4, 2026',
+      () => formatDate(testDate, 'MMMM D, YYYY'));
+
+    runTest('Two-digit year', 'M/D/YY', '1/4/26',
+      () => formatDate(testDate, 'M/D/YY'));
+
+    runTest('Zero-padded components', 'MM/DD/YYYY', '01/04/2026',
+      () => formatDate(testDate, 'MM/DD/YYYY'));
+
+    // Test Suite 2: Weekday Formats
+    console.log('=== Test Suite 2: Weekday Formats ===');
+
+    runTest('Short weekday', 'ddd, MMM D', 'Sun, Jan 4',
+      () => formatDate(testDate, 'ddd, MMM D'));
+
+    runTest('Full weekday', 'dddd, MMMM D, YYYY', 'Sunday, January 4, 2026',
+      () => formatDate(testDate, 'dddd, MMMM D, YYYY'));
+
+    // Test Suite 3: International Date Formats
+    console.log('=== Test Suite 3: International Date Formats ===');
+
+    runTest('Japanese date', 'YYYY年MM月DD日', '2026年01月04日',
+      () => formatDate(testDate, 'YYYY年MM月DD日'));
+
+    runTest('Chinese date (unpadded)', 'YYYY年M月D日', '2026年1月4日',
+      () => formatDate(testDate, 'YYYY年M月D日'));
+
+    runTest('Korean date', 'YYYY년 M월 D일', '2026년 1월 4일',
+      () => formatDate(testDate, 'YYYY년 M월 D일'));
+
+    // Test Suite 4: Time Formats
+    console.log('=== Test Suite 4: Time Formats ===');
+
+    runTest('24-hour time', 'HH:mm', '13:23',
+      () => formatTime(testDate, 'HH:mm'));
+
+    runTest('24-hour with seconds', 'HH:mm:ss', '13:23:45',
+      () => formatTime(testDate, 'HH:mm:ss'));
+
+    runTest('12-hour time with AM/PM', 'h:mm a', '1:23 PM',
+      () => formatTime(testDate, 'h:mm a'));
+
+    runTest('12-hour with seconds', 'h:mm:ss a', '1:23:45 PM',
+      () => formatTime(testDate, 'h:mm:ss a'));
+
+    runTest('Zero-padded 12-hour', 'hh:mm a', '01:23 PM',
+      () => formatTime(testDate, 'hh:mm a'));
+
+    runTest('Compact 24-hour', 'HHmm', '1323',
+      () => formatTime(testDate, 'HHmm'));
+
+    // Test Suite 5: Combined Date & Time
+    console.log('=== Test Suite 5: Combined Date & Time ===');
+
+    runTest('ISO 8601 datetime', 'YYYY-MM-DD', 'HH:mm:ss', '2026-01-04 13:23:45',
+      () => formatDateTime(testDate, 'YYYY-MM-DD', 'HH:mm:ss'));
+
+    runTest('US datetime', 'M/D/YYYY', 'h:mm a', '1/4/2026 1:23 PM',
+      () => formatDateTime(testDate, 'M/D/YYYY', 'h:mm a'));
+
+    runTest('European datetime', 'DD/MM/YYYY', 'HH:mm', '04/01/2026 13:23',
+      () => formatDateTime(testDate, 'DD/MM/YYYY', 'HH:mm'));
+
+    // Test Suite 6: Error Handling
+    console.log('=== Test Suite 6: Error Handling ===');
+
+    runTest('Invalid format fallback', 'invalid-format', '2026-01-04',
+      () => formatDate(testDate, 'invalid-format'));
+
+    runTest('Empty format fallback', '', '2026-01-04',
+      () => formatDate(testDate, ''));
+
+    runTest('Null date string', null, '',
+      () => formatDate(null, 'YYYY-MM-DD'));
+
+    runTest('Empty date string', '', '',
+      () => formatDate('', 'YYYY-MM-DD'));
+
+    runTest('Invalid date string', 'not-a-date', '',
+      () => formatDate('not-a-date', 'YYYY-MM-DD'));
+
+    // Test Suite 7: Default Constants
+    console.log('=== Test Suite 7: Default Constants ===');
+
+    runTest('Default date format', DEFAULT_DATE_FORMAT, 'YYYY-MM-DD',
+      () => DEFAULT_DATE_FORMAT);
+
+    runTest('Default time format', DEFAULT_TIME_FORMAT, 'HH:mm',
+      () => DEFAULT_TIME_FORMAT);
+
+    // Test Suite 8: Edge Cases
+    console.log('=== Test Suite 8: Edge Cases ===');
+
+    // Test with midnight
+    const midnight = '2026-01-04T00:00:00Z';
+    runTest('Midnight 24-hour', 'HH:mm', '00:00',
+      () => formatTime(midnight, 'HH:mm'));
+
+    runTest('Midnight 12-hour', 'h:mm a', '12:00 AM',
+      () => formatTime(midnight, 'h:mm a'));
+
+    // Test with noon
+    const noon = '2026-01-04T12:00:00Z';
+    runTest('Noon 12-hour', 'h:mm a', '12:00 PM',
+      () => formatTime(noon, 'h:mm a'));
+
+    // Test single-digit month and day
+    const singleDigit = '2026-03-05T13:23:45Z';
+    runTest('Single-digit month/day unpadded', 'M/D/YYYY', '3/5/2026',
+      () => formatDate(singleDigit, 'M/D/YYYY'));
+
+    runTest('Single-digit month/day padded', 'MM/DD/YYYY', '03/05/2026',
+      () => formatDate(singleDigit, 'MM/DD/YYYY'));
+
+    // Render results
+    const container = document.getElementById('test-results');
+
+    // Summary
+    const summaryDiv = document.createElement('div');
+    summaryDiv.className = `summary ${failCount === 0 ? 'success' : 'failure'}`;
+    summaryDiv.textContent = `Tests: ${passCount + failCount} | Passed: ${passCount} | Failed: ${failCount}`;
+    container.appendChild(summaryDiv);
+
+    // Group results by test suite
+    const suites = [
+      { title: 'Basic Date Formats', start: 0, count: 8 },
+      { title: 'Weekday Formats', start: 8, count: 2 },
+      { title: 'International Date Formats', start: 10, count: 3 },
+      { title: 'Time Formats', start: 13, count: 6 },
+      { title: 'Combined Date & Time', start: 19, count: 3 },
+      { title: 'Error Handling', start: 22, count: 5 },
+      { title: 'Default Constants', start: 27, count: 2 },
+      { title: 'Edge Cases', start: 29, count: 5 }
+    ];
+
+    suites.forEach(suite => {
+      const section = document.createElement('div');
+      section.className = 'test-section';
+
+      const title = document.createElement('h2');
+      title.textContent = suite.title;
+      section.appendChild(title);
+
+      const suiteResults = results.slice(suite.start, suite.start + suite.count);
+      suiteResults.forEach(result => {
+        const div = document.createElement('div');
+        div.className = `test-result ${result.passed ? 'pass' : 'fail'}`;
+
+        div.innerHTML = `
+          <div>
+            <strong>${result.passed ? '✓' : '✗'} ${result.description}</strong><br>
+            <span class="format">${result.format}</span>
+          </div>
+          <div class="output">
+            ${result.passed
+              ? `${result.actual}`
+              : `Expected: ${result.expected}<br>Got: ${result.actual}`
+            }
+          </div>
+        `;
+
+        section.appendChild(div);
+      });
+
+      container.appendChild(section);
+    });
+
+    console.log(`\n=== Test Summary ===`);
+    console.log(`Total: ${passCount + failCount}`);
+    console.log(`Passed: ${passCount}`);
+    console.log(`Failed: ${failCount}`);
+
+    if (failCount === 0) {
+      console.log('\n✓ All tests passed!');
+    } else {
+      console.error(`\n✗ ${failCount} test(s) failed`);
+    }
+  </script>
+</body>
+</html>

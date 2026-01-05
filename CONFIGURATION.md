@@ -197,45 +197,192 @@ DEFAULT_RETENTION=1month
 
 ### DATE_FORMAT
 
-**Purpose**: Control how dates are displayed throughout the site
+**Purpose**: Control how dates are displayed throughout the site using ICU-style format strings
 
-**Default**: `"medium"`
+**Default**: `"YYYY-MM-DD"` (ISO 8601)
 
-**Valid Values**:
-- `"short"` → 1/4/26
-- `"medium"` → Jan 4, 2026
-- `"long"` → January 4, 2026
-- `"full"` → Saturday, January 4, 2026
+**⚠️ BREAKING CHANGE (v0.4.0)**: Named presets (short/medium/long/full) have been removed in favor of ICU format strings. See migration guide below.
+
+#### ICU Format Tokens
+
+Build custom date formats using these tokens:
+
+**Year:**
+- `YYYY` → Full year (2026)
+- `YY` → Two-digit year (26)
+
+**Month:**
+- `MMMM` → Full month name (January)
+- `MMM` → Short month name (Jan)
+- `MM` → Zero-padded month (01)
+- `M` → Month without padding (1)
+
+**Day:**
+- `DD` → Zero-padded day (04)
+- `D` → Day without padding (4)
+
+**Weekday:**
+- `dddd` → Full weekday (Sunday)
+- `ddd` → Short weekday (Sun)
+
+#### Common Date Formats by Country
+
+| Country/Region | Format | Example Output |
+|----------------|--------|----------------|
+| USA | `M/D/YYYY` | 1/4/2026 |
+| USA (alt) | `MMM D, YYYY` | Jan 4, 2026 |
+| UK/Europe | `DD/MM/YYYY` | 04/01/2026 |
+| Germany | `DD.MM.YYYY` | 04.01.2026 |
+| France | `DD/MM/YYYY` | 04/01/2026 |
+| Japan | `YYYY年MM月DD日` | 2026年01月04日 |
+| China | `YYYY年M月D日` | 2026年1月4日 |
+| Korea | `YYYY년 M월 D일` | 2026년 1월 4일 |
+| ISO 8601 | `YYYY-MM-DD` | 2026-01-04 |
+| Canada | `YYYY-MM-DD` | 2026-01-04 |
+| Australia | `D/M/YYYY` | 4/1/2026 |
+| India | `DD-MM-YYYY` | 04-01-2026 |
+| Brazil | `DD/MM/YYYY` | 04/01/2026 |
+| Mexico | `DD/MM/YYYY` | 04/01/2026 |
+
+#### Examples
+
+```bash
+# ISO 8601 format (recommended for international audiences)
+DATE_FORMAT=YYYY-MM-DD
+
+# US format with slashes
+DATE_FORMAT=M/D/YYYY
+
+# US format with month name
+DATE_FORMAT=MMM D, YYYY
+
+# European format
+DATE_FORMAT=DD/MM/YYYY
+
+# German format with dots
+DATE_FORMAT=DD.MM.YYYY
+
+# Japanese format
+DATE_FORMAT=YYYY年MM月DD日
+
+# Include weekday
+DATE_FORMAT=ddd, MMM D, YYYY
+```
 
 **Set in**: Cloudflare Pages → Settings → Environment variables
 
 ```
-DATE_FORMAT=medium
+DATE_FORMAT=YYYY-MM-DD
 ```
 
 **Applies to**: Index page, post metadata, admin interface
+
+#### Migration from v0.3.x
+
+If you're upgrading from Textpile v0.3.x, update your DATE_FORMAT value:
+
+| Old Value | New Value | Output |
+|-----------|-----------|--------|
+| `short` | `M/D/YY` | 1/4/26 |
+| `medium` | `MMM D, YYYY` | Jan 4, 2026 |
+| `long` | `MMMM D, YYYY` | January 4, 2026 |
+| `full` | `dddd, MMMM D, YYYY` | Saturday, January 4, 2026 |
+
+**Invalid formats**: If you specify an invalid format string, the system falls back to `YYYY-MM-DD` (ISO 8601) and logs a warning in the browser console.
 
 ---
 
 ### TIME_FORMAT
 
-**Purpose**: Control how times are displayed throughout the site
+**Purpose**: Control how times are displayed throughout the site using ICU-style format strings
 
-**Default**: `"short"`
+**Default**: `"HH:mm"` (24-hour format)
 
-**Valid Values**:
-- `"short"` → 1:23 PM (no seconds)
-- `"medium"` → 1:23:45 PM (with seconds)
+**⚠️ BREAKING CHANGE (v0.4.0)**: Named presets (short/medium) have been removed in favor of ICU format strings. See migration guide below.
+
+#### ICU Format Tokens
+
+Build custom time formats using these tokens:
+
+**Hour (24-hour):**
+- `HH` → Zero-padded 24-hour (13)
+- `H` → 24-hour without padding (13)
+
+**Hour (12-hour):**
+- `hh` → Zero-padded 12-hour (01)
+- `h` → 12-hour without padding (1)
+
+**Minute:**
+- `mm` → Zero-padded minutes (05)
+- `m` → Minutes without padding (5)
+
+**Second:**
+- `ss` → Zero-padded seconds (09)
+- `s` → Seconds without padding (9)
+
+**Day Period:**
+- `a` → AM/PM marker (PM)
+
+#### Common Time Formats by Country
+
+| Country/Region | Format | Example Output |
+|----------------|--------|----------------|
+| USA/UK (12-hour) | `h:mm a` | 1:23 PM |
+| USA (12-hour with seconds) | `h:mm:ss a` | 1:23:45 PM |
+| Europe/Asia (24-hour) | `HH:mm` | 13:23 |
+| ISO 8601 (24-hour) | `HH:mm:ss` | 13:23:45 |
+| Military | `HHmm` | 1323 |
+
+#### Examples
+
+```bash
+# 24-hour format (default, international standard)
+TIME_FORMAT=HH:mm
+
+# 24-hour with seconds
+TIME_FORMAT=HH:mm:ss
+
+# 12-hour format with AM/PM (USA)
+TIME_FORMAT=h:mm a
+
+# 12-hour with seconds
+TIME_FORMAT=h:mm:ss a
+
+# Compact 24-hour (no separator)
+TIME_FORMAT=HHmm
+```
 
 **Set in**: Cloudflare Pages → Settings → Environment variables
 
 ```
-TIME_FORMAT=short
+TIME_FORMAT=HH:mm
 ```
 
 **Applies to**: Index page, post metadata, admin interface
 
-**Recommendation**: Use `"short"` for cleaner display, `"medium"` if precision matters
+#### Migration from v0.3.x
+
+If you're upgrading from Textpile v0.3.x, update your TIME_FORMAT value:
+
+| Old Value | New Value | Output |
+|-----------|-----------|--------|
+| `short` | `h:mm a` | 1:23 PM |
+| `medium` | `h:mm:ss a` | 1:23:45 PM |
+
+**Invalid formats**: If you specify an invalid format string, the system falls back to `HH:mm` (24-hour) and logs a warning in the browser console.
+
+---
+
+### Combined Date & Time Examples
+
+| Region | DATE_FORMAT | TIME_FORMAT | Combined Output |
+|--------|-------------|-------------|-----------------|
+| USA | `M/D/YYYY` | `h:mm a` | 1/4/2026 1:23 PM |
+| USA (alt) | `MMM D, YYYY` | `h:mm a` | Jan 4, 2026 1:23 PM |
+| UK | `DD/MM/YYYY` | `HH:mm` | 04/01/2026 13:23 |
+| Germany | `DD.MM.YYYY` | `HH:mm` | 04.01.2026 13:23 |
+| Japan | `YYYY年MM月DD日` | `HH:mm` | 2026年01月04日 13:23 |
+| ISO 8601 | `YYYY-MM-DD` | `HH:mm:ss` | 2026-01-04 13:23:45 |
 
 ---
 

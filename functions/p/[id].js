@@ -1,30 +1,7 @@
+import { formatDateTime } from "../../public/date-formatter.js";
+
 function escapeHtml(s) {
   return s.replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-}
-
-function formatDateTime(dateString, dateFormat = "medium", timeFormat = "short") {
-  if (!dateString) return "";
-  const date = new Date(dateString);
-
-  const dateFormatMap = {
-    short: { month: "numeric", day: "numeric", year: "2-digit" },
-    medium: { month: "short", day: "numeric", year: "numeric" },
-    long: { month: "long", day: "numeric", year: "numeric" },
-    full: { weekday: "long", month: "long", day: "numeric", year: "numeric" },
-  };
-
-  const timeFormatMap = {
-    short: { hour: "numeric", minute: "2-digit" },
-    medium: { hour: "numeric", minute: "2-digit", second: "2-digit" },
-  };
-
-  const dateOptions = dateFormatMap[dateFormat] || dateFormatMap.medium;
-  const timeOptions = timeFormatMap[timeFormat] || timeFormatMap.short;
-
-  const datePart = date.toLocaleDateString("en-US", dateOptions);
-  const timePart = date.toLocaleTimeString("en-US", timeOptions);
-
-  return `${datePart} ${timePart}`;
 }
 
 export async function onRequestGet({ params, env }) {
@@ -44,12 +21,12 @@ export async function onRequestGet({ params, env }) {
   const expiresAt = metadata.expiresAt || null;
 
   // Get config from env
-  const dateFormat = env.DATE_FORMAT || "medium";
-  const timeFormat = env.TIME_FORMAT || "short";
+  const dateFormat = env.DATE_FORMAT || "YYYY-MM-DD";
+  const timeFormat = env.TIME_FORMAT || "HH:mm";
 
   // Check if post has expired
   if (expiresAt && new Date(expiresAt).getTime() <= Date.now()) {
-    const formattedExpiry = formatDateTime(expiresAt, dateFormat, timeFormat);
+    const formattedExpiry = formatDateTime(expiresAt, dateFormat, timeFormat, 'en-US');
     const expiredHtml = `<!doctype html>
 <html lang="en">
 <head>
@@ -92,7 +69,7 @@ export async function onRequestGet({ params, env }) {
   }
 
   // Render Markdown client-side using marked (CDN) to keep the function tiny.
-  const formattedDate = formatDateTime(createdAt, dateFormat, timeFormat);
+  const formattedDate = formatDateTime(createdAt, dateFormat, timeFormat, 'en-US');
   const html = `<!doctype html>
 <html lang="en">
 <head>

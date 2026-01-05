@@ -12,7 +12,10 @@
       "Bash(find:*)",
       "Bash(grep:*)",
       "Bash(chmod:*)",
-      "Bash(node scripts/update-version.js:*)"
+      "Bash(node scripts/update-version.js:*)",
+      "Bash(curl:*)",
+      "Bash(node test-date-formatter.mjs:*)",
+      "Bash(node -e:*)"
     ]
   }
 }

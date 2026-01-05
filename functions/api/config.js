@@ -9,8 +9,8 @@ export async function onRequestGet({ env }) {
       communityName: env.COMMUNITY_NAME || "the community",
       adminEmail: env.ADMIN_EMAIL || null,
       defaultRetention: env.DEFAULT_RETENTION || "1month",
-      dateFormat: env.DATE_FORMAT || "medium",  // short, medium, long, full
-      timeFormat: env.TIME_FORMAT || "short",   // short (no seconds), medium (with seconds)
+      dateFormat: env.DATE_FORMAT || "YYYY-MM-DD",  // ICU format string (e.g., "DD/MM/YYYY", "YYYY年MM月DD日")
+      timeFormat: env.TIME_FORMAT || "HH:mm",       // ICU format string (e.g., "h:mm a", "HH:mm:ss")
       textpileVersion: TEXTPILE_VERSION,
     }
   }, {

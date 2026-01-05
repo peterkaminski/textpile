@@ -7,6 +7,115 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-01-05
+
+### ⚠️ BREAKING CHANGES
+
+**Date/Time Format Presets Removed**
+
+This release removes the hardcoded date/time format presets (short/medium/long/full) in favor of flexible ICU-style format strings. This provides full customization for international date formatting.
+
+**Migration Required**:
+If you have `DATE_FORMAT` or `TIME_FORMAT` environment variables set, you must update them:
+
+| Old Value (v0.3.x) | New Value (v0.4.0) | Output |
+|--------------------|-------------------|--------|
+| `DATE_FORMAT=short` | `DATE_FORMAT=M/D/YY` | 1/4/26 |
+| `DATE_FORMAT=medium` | `DATE_FORMAT=MMM D, YYYY` | Jan 4, 2026 |
+| `DATE_FORMAT=long` | `DATE_FORMAT=MMMM D, YYYY` | January 4, 2026 |
+| `DATE_FORMAT=full` | `DATE_FORMAT=dddd, MMMM D, YYYY` | Saturday, January 4, 2026 |
+| `TIME_FORMAT=short` | `TIME_FORMAT=h:mm a` | 1:23 PM |
+| `TIME_FORMAT=medium` | `TIME_FORMAT=h:mm:ss a` | 1:23:45 PM |
+
+**New Defaults**:
+- `DATE_FORMAT` default changed from `"medium"` → `"YYYY-MM-DD"` (ISO 8601)
+- `TIME_FORMAT` default changed from `"short"` → `"HH:mm"` (24-hour)
+
+If you don't have these variables set, Textpile will use ISO 8601 format automatically.
+
+### Added
+
+- **ICU-Style Date/Time Formatting**
+  - Custom format strings using tokens like `YYYY`, `MM`, `DD`, `HH`, `mm`, `ss`
+  - Supports international formats (e.g., `DD/MM/YYYY` for Europe, `YYYY年MM月DD日` for Japan)
+  - Full token reference: `YYYY`, `YY`, `MMMM`, `MMM`, `MM`, `M`, `DD`, `D`, `dddd`, `ddd`, `HH`, `H`, `hh`, `h`, `mm`, `m`, `ss`, `s`, `a`
+  - Fallback to ISO 8601 (`YYYY-MM-DD HH:mm`) for invalid formats
+
+- **New Shared Date Formatter Module**
+  - Created `/public/date-formatter.js` - zero-dependency ICU parser (~280 lines)
+  - Single source of truth for date/time formatting
+  - Used by both client-side and server-side code
+  - Eliminates code duplication (~60 lines removed)
+
+- **Comprehensive Documentation**
+  - Added ICU format token reference to CONFIGURATION.md
+  - 14+ country-specific format examples (USA, UK, Germany, Japan, China, Korea, etc.)
+  - Migration guide for upgrading from v0.3.x
+  - Combined date & time examples by region
+
+### Changed
+
+- **Default Formats**
+  - `DATE_FORMAT`: `"medium"` → `"YYYY-MM-DD"` (ISO 8601)
+  - `TIME_FORMAT`: `"short"` → `"HH:mm"` (24-hour)
+  - More internationally accessible defaults
+
+- **Client-Side Formatting**
+  - `public/textpile-utils.js`: Now imports from `date-formatter.js` instead of duplicating logic
+  - Removed hardcoded format maps (dateFormatMap, timeFormatMap)
+  - Functions simplified to wrapper calls
+  - Net reduction: ~32 lines
+
+- **Server-Side Formatting**
+  - `functions/p/[id].js`: Now imports from `date-formatter.js`
+  - Removed duplicate `formatDateTime()` function
+  - Changed default parameters to ISO 8601
+  - Net reduction: ~24 lines
+
+- **Admin Interface**
+  - `public/admin.html`: Now uses configured date formats (consistent with public pages)
+  - Replaced `toLocaleString()` with `formatDateTime()` from textpile-utils.js
+  - Shows dates in same format as rest of the site
+
+- **API Configuration**
+  - `functions/api/config.js`: Updated defaults and comments
+  - Documents ICU format string usage
+  - Examples: `"DD/MM/YYYY"`, `"YYYY年MM月DD日"`
+
+### Removed
+
+- **Named Format Presets**
+  - Removed `short`, `medium`, `long`, `full` date presets
+  - Removed `short`, `medium` time presets
+  - Replaced with flexible ICU format strings
+
+### Files Modified
+
+- `public/date-formatter.js` (NEW) - ICU format parser and formatter
+- `public/textpile-utils.js` - Import from date-formatter, remove format maps
+- `functions/p/[id].js` - Import from date-formatter, remove duplicate function
+- `functions/api/config.js` - Change defaults to ISO 8601
+- `public/admin.html` - Use formatDateTime instead of toLocaleString
+- `CONFIGURATION.md` - Complete rewrite of DATE_FORMAT and TIME_FORMAT sections
+
+### Technical Details
+
+- **Zero new dependencies**: Custom lightweight ICU parser
+- **Zero build step**: Pure ES modules work with Cloudflare Pages as-is
+- **Code reduction**: Net -80 lines despite adding new functionality
+- **Parsing**: Uses `Intl.DateTimeFormat.formatToParts()` for token mapping
+- **Compatibility**: Works in all modern browsers and Cloudflare Workers runtime
+
+### Developer Experience
+
+- **Single source of truth**: All date formatting in one module
+- **No code duplication**: Client and server share same logic
+- **Better defaults**: ISO 8601 is internationally recognized
+- **Full flexibility**: Support any date/time format worldwide
+- **Clear error handling**: Invalid formats fall back gracefully with console warnings
+
+---
+
 ## [0.3.3] - 2026-01-05
 
 ### Changed
@@ -460,7 +569,8 @@ We follow [Semantic Versioning](https://semver.org/):
 
 **Note**: Dates use YYYY-MM-DD format (ISO 8601).
 
-[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.3...HEAD
+[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.4.0...HEAD
+[0.4.0]: https://github.com/peterkaminski/textpile/compare/v0.3.3...v0.4.0
 [0.3.3]: https://github.com/peterkaminski/textpile/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/peterkaminski/textpile/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/peterkaminski/textpile/compare/v0.3.0...v0.3.1
