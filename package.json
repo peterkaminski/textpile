@@ -1,0 +1,13 @@
+{
+  "name": "textpile",
+  "version": "0.3.2",
+  "type": "module",
+  "private": true,
+  "description": "A low-maintenance Cloudflare Pages + Functions + KV application for non-attributed, auto-expiring community posts",
+  "scripts": {
+    "update-version": "node scripts/update-version.js"
+  },
+  "keywords": ["cloudflare", "pages", "kv", "markdown", "ephemeral"],
+  "author": "ChatGPT 5.2, Claude Code Sonnet 4.5, and Peter Kaminski",
+  "license": "MIT"
+}

@@ -1,5 +1,6 @@
 // Textpile client-side utilities
 // Shared functions for configuration and formatting
+import { TEXTPILE_VERSION } from "./version.js";
 
 // Global config (loaded on page load)
 let CONFIG = {
@@ -9,7 +10,7 @@ let CONFIG = {
   defaultRetention: "1month",
   dateFormat: "medium",
   timeFormat: "short",
-  textpileVersion: "0.3.1",
+  textpileVersion: TEXTPILE_VERSION,
 };
 
 // Load configuration from API

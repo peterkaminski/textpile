@@ -73,7 +73,7 @@ COMMUNITY_NAME=the Acme Research Team
 **Default**: `null` (no footer shown)
 
 **Usage**: When set, adds footer to all pages:
-> This is an instance of Textpile 0.3.1, operated by [email].
+> This is an instance of Textpile 0.3.2, operated by [email].
 
 **Example Values**:
 - `"admin@example.com"`

@@ -7,6 +7,57 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.2] - 2026-01-04
+
+### Added
+
+- **Centralized Version Management**
+  - Created `/public/version.js` as single source of truth for version number
+  - Both `functions/api/config.js` and `public/textpile-utils.js` now import from `version.js`
+  - Version updates now require editing only ONE file instead of 5+
+  - Added `scripts/update-version.js` automation script to update documentation files
+  - Created `package.json` to enable ES module support for scripts
+
+### Changed
+
+- **Version Management Workflow**
+  - Release workflow simplified: edit `version.js`, run `npm run update-version`, update CHANGELOG
+  - Documentation files (README.md, CONFIGURATION.md) auto-updated via script
+  - Guaranteed version consistency across all files
+
+### Developer Experience
+
+- **New npm script**: `npm run update-version` - Updates documentation to match version.js
+- **Reduced maintenance**: 80% fewer files to edit when releasing new versions
+- **No build step required**: Works with Cloudflare Pages as-is, pure ES modules
+
+### Technical Details
+
+- `/public/version.js` exports `TEXTPILE_VERSION` constant
+- `functions/api/config.js` imports version using relative path: `../../public/version.js`
+- `public/textpile-utils.js` imports version using relative path: `./version.js`
+- Script uses Node.js ES modules (enabled via `"type": "module"` in package.json)
+
+### Files Modified
+
+- `functions/api/config.js` - Import TEXTPILE_VERSION from version.js
+- `public/textpile-utils.js` - Import TEXTPILE_VERSION from version.js
+- `README.md` - Auto-updated to v0.3.2 via script
+- `CONFIGURATION.md` - Auto-updated to v0.3.2 via script
+
+### Files Created
+
+- `public/version.js` - Single source of truth for version
+- `scripts/update-version.js` - Documentation updater script
+- `package.json` - Package metadata and ES module configuration
+
+### Notes
+
+- **No breaking changes**: All features are backwards compatible
+- **No runtime changes**: Version is still available via `/api/config` as before
+- **Pure refactoring**: User-facing behavior unchanged
+- Future releases: Edit `public/version.js` and run `npm run update-version`
+
 ## [0.3.1] - 2026-01-04
 
 ### Added
@@ -392,7 +443,8 @@ We follow [Semantic Versioning](https://semver.org/):
 
 **Note**: Dates use YYYY-MM-DD format (ISO 8601).
 
-[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.1...HEAD
+[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.2...HEAD
+[0.3.2]: https://github.com/peterkaminski/textpile/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/peterkaminski/textpile/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/peterkaminski/textpile/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/peterkaminski/textpile/compare/v0.2.0...v0.2.1

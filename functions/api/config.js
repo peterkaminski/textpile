@@ -1,4 +1,6 @@
 // Returns public configuration variables
+import { TEXTPILE_VERSION } from "../../public/version.js";
+
 export async function onRequestGet({ env }) {
   return Response.json({
     success: true,
@@ -9,7 +11,7 @@ export async function onRequestGet({ env }) {
       defaultRetention: env.DEFAULT_RETENTION || "1month",
       dateFormat: env.DATE_FORMAT || "medium",  // short, medium, long, full
       timeFormat: env.TIME_FORMAT || "short",   // short (no seconds), medium (with seconds)
-      textpileVersion: "0.3.1",
+      textpileVersion: TEXTPILE_VERSION,
     }
   }, {
     headers: {
