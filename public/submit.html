@@ -25,6 +25,7 @@
       <label>
         Body (required)
         <textarea id="body" name="body" placeholder="Paste Markdown or plain text here" required></textarea>
+        <div class="small" id="size-info"></div>
       </label>
 
       <label>
@@ -77,6 +78,33 @@
       const form = document.getElementById("form");
       const msg = document.getElementById("msg");
       const btn = document.getElementById("btn");
+      const bodyField = document.getElementById("body");
+      const sizeInfo = document.getElementById("size-info");
+
+      // Size limits (hardcoded to match server defaults)
+      const MAX_SIZE = 1048576; // 1 MB
+      const WARN_SIZE = 786432; // 750 KB
+
+      function updateSizeInfo() {
+        const text = bodyField.value;
+        const size = new Blob([text]).size;
+        const sizeMB = (size / 1048576).toFixed(2);
+        const sizeKB = (size / 1024).toFixed(1);
+
+        if (size > MAX_SIZE) {
+          sizeInfo.innerHTML = `<span style="color: #f44336;">⚠️ Too large: ${sizeMB} MB (max 1 MB)</span>`;
+          btn.disabled = true;
+        } else if (size > WARN_SIZE) {
+          sizeInfo.innerHTML = `<span style="color: #ff9800;">⚠️ Warning: ${sizeKB} KB (approaching 1 MB limit)</span>`;
+          btn.disabled = false;
+        } else {
+          sizeInfo.textContent = `Size: ${sizeKB} KB`;
+          btn.disabled = false;
+        }
+      }
+
+      bodyField.addEventListener("input", updateSizeInfo);
+      updateSizeInfo();
 
       form.addEventListener("submit", async (e) => {
         e.preventDefault();

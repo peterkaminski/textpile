@@ -72,6 +72,17 @@ export async function onRequestPost({ request, env }) {
     return Response.json({ error: "Body is required." }, { status: 400 });
   }
 
+  // Check post size
+  const maxPostSize = parseInt(env.MAX_POST_SIZE) || 1048576; // 1 MB default
+  const bodySize = new Blob([body]).size;
+  if (bodySize > maxPostSize) {
+    const sizeMB = (bodySize / 1048576).toFixed(2);
+    const maxMB = (maxPostSize / 1048576).toFixed(2);
+    return Response.json({
+      error: `Post too large: ${sizeMB} MB (max ${maxMB} MB). Please reduce content size.`
+    }, { status: 413 });
+  }
+
   // Validate and get expiry period
   const expiryKey = data?.expiry || "1month"; // Default to 1 month
   const expirySeconds = EXPIRY_MAP[expiryKey];
