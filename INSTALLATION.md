@@ -25,8 +25,8 @@ cd textpile
 ### 2. Create a Cloudflare KV Namespace
 
 1. Log in to the [Cloudflare Dashboard](https://dash.cloudflare.com)
-2. Navigate to **Workers & Pages** → **KV**
-3. Click **Create a namespace**
+2. Navigate to **Workers KV**
+3. Click **+ Create Instance**
 4. Name it (e.g., `TEXTPILE_STORAGE` or `COMMUNITY_PASTES`)
 5. Click **Add**
 6. Note the namespace ID for later
@@ -151,11 +151,28 @@ Cloudflare Pages provides built-in analytics:
 
 ## Troubleshooting
 
+### 500 errors after deployment (Most Common)
+
+**Symptom**: Homepage shows "Failed to load posts" with 500 error, or submit fails with 500 error.
+
+**Cause**: KV namespace binding was added but site wasn't redeployed afterward.
+
+**Solution**:
+1. Verify KV binding exists: Settings → Functions → KV namespace bindings
+2. **Redeploy the site**:
+   - Go to Deployments tab
+   - Click "Retry deployment" on latest deployment
+   - OR push a new commit to trigger deployment
+3. Wait for deployment to complete (~1 minute)
+4. Test: Visit `https://your-site.pages.dev/api/index` - should return `{"success":true,"items":[]}`
+
+**Important**: Bindings only apply to NEW deployments, not existing ones. Always redeploy after changing bindings.
+
 ### "KV is not defined" error
 
 - Verify the KV binding variable name is exactly `KV`
 - Ensure namespace is bound in Settings → Functions
-- Redeploy after adding the binding
+- Redeploy after adding the binding (see above)
 
 ### Submit token not working
 
