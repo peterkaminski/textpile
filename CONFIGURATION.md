@@ -70,10 +70,11 @@ COMMUNITY_NAME=the Acme Research Team
 
 **Purpose**: Display contact email in footer
 
-**Default**: `null` (no footer shown)
+**Default**: `null` (footer shown without email)
 
-**Usage**: When set, adds footer to all pages:
-> This is an instance of Textpile 0.3.2, operated by [email].
+**Usage**: When set, footer displays:
+> **Textpile** · operated by [email]
+> Instance of Textpile 0.3.2
 
 **Example Values**:
 - `"admin@example.com"`

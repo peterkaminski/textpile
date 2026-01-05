@@ -98,19 +98,21 @@ export function updateH1WithInstanceName() {
 // Add footer to page
 export function addFooter() {
   const footer = document.createElement("footer");
-  footer.className = "site-footer";
+  footer.className = "small";
 
-  let footerHTML = '<hr /><p class="small">';
+  let footerHTML = '<hr />';
 
-  // Footer format: "This is an instance of Textpile {version}, operated by {email}."
-  footerHTML += 'This is an instance of ';
-  footerHTML += `<a href="https://github.com/peterkaminski/textpile">Textpile ${escapeHtml(CONFIG.textpileVersion)}</a>`;
+  // Footer format: "{instance_name} · operated by {email}\nInstance of Textpile {version}"
+  footerHTML += `<strong>${escapeHtml(CONFIG.instanceName)}</strong>`;
 
   if (CONFIG.adminEmail) {
-    footerHTML += `, operated by <a href="mailto:${escapeHtml(CONFIG.adminEmail)}">${escapeHtml(CONFIG.adminEmail)}</a>`;
+    footerHTML += ` &middot; operated by <a href="mailto:${escapeHtml(CONFIG.adminEmail)}">${escapeHtml(CONFIG.adminEmail)}</a>`;
   }
 
-  footerHTML += '.</p>';
+  footerHTML += '<br>';
+  footerHTML += 'Instance of ';
+  footerHTML += `<a href="https://github.com/peterkaminski/textpile">Textpile ${escapeHtml(CONFIG.textpileVersion)}</a>`;
+
   footer.innerHTML = footerHTML;
   document.body.appendChild(footer);
 }

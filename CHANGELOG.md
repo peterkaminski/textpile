@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.3] - 2026-01-05
+
+### Changed
+
+- **Footer Design Update**
+  - Redesigned footer format for cleaner, more prominent display
+  - Instance name now shown in bold at the start
+  - Format: `**{instance_name}** · operated by {email}` on first line
+  - "Instance of Textpile {version}" link on second line
+  - Changed footer class from `"site-footer"` to `"small"` for consistency
+  - Uses middle dot (·) separator for cleaner visual separation
+
+### Files Modified
+
+- `public/textpile-utils.js` - Updated `addFooter()` function with new format
+- `CONFIGURATION.md` - Updated footer example to match new format
+
 ## [0.3.2] - 2026-01-04
 
 ### Added
@@ -443,7 +460,8 @@ We follow [Semantic Versioning](https://semver.org/):
 
 **Note**: Dates use YYYY-MM-DD format (ISO 8601).
 
-[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.2...HEAD
+[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.3...HEAD
+[0.3.3]: https://github.com/peterkaminski/textpile/compare/v0.3.2...v0.3.3
 [0.3.2]: https://github.com/peterkaminski/textpile/compare/v0.3.1...v0.3.2
 [0.3.1]: https://github.com/peterkaminski/textpile/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/peterkaminski/textpile/compare/v0.2.1...v0.3.0
