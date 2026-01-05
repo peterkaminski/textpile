@@ -15,3 +15,4 @@ button:hover { background: rgba(127,127,127,.18); }
 .actions { display: flex; gap: 10px; align-items: center; }
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
 pre { overflow: auto; padding: 12px; border-radius: 12px; border: 1px solid rgba(127,127,127,.25); }
+.site-footer { margin-top: 48px; text-align: center; }

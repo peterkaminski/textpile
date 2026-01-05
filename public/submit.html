@@ -8,8 +8,8 @@
   </head>
   <body>
     <header>
-      <h1>Submit</h1>
-      <div class="actions"><a href="/">TOC</a></div>
+      <h1>Add Post</h1>
+      <div class="actions"><a href="/">Home</a></div>
     </header>
 
     <p class="small">
@@ -31,7 +31,7 @@
         Retention period (required)
         <select id="expiry" name="expiry" required>
           <option value="1week">1 week</option>
-          <option value="1month" selected>1 month (default)</option>
+          <option value="1month">1 month</option>
           <option value="3months">3 months</option>
           <option value="6months">6 months</option>
           <option value="1year">1 year</option>
@@ -59,6 +59,21 @@
     </form>
 
     <script type="module">
+      import { initPage, getConfig } from '/textpile-utils.js';
+
+      // Initialize page (load config, apply community name, add footer)
+      await initPage();
+
+      // Set default retention from config
+      const defaultRetention = getConfig('defaultRetention');
+      const expirySelect = document.getElementById("expiry");
+      if (defaultRetention && expirySelect) {
+        const option = expirySelect.querySelector(`option[value="${defaultRetention}"]`);
+        if (option) {
+          option.selected = true;
+        }
+      }
+
       const form = document.getElementById("form");
       const msg = document.getElementById("msg");
       const btn = document.getElementById("btn");

@@ -3,8 +3,8 @@ function nowIso() {
 }
 
 function makeId() {
-  // Sortable: YYYYMMDDTHHMMSS + random suffix
-  const t = new Date().toISOString().replace(/[-:.Z]/g, "");
+  // Sortable: YYYYMMDDTHHMMSS + random suffix (no milliseconds)
+  const t = new Date().toISOString().replace(/[-:.Z]/g, "").slice(0, 15); // Remove milliseconds
   const r = Math.random().toString(36).slice(2, 8);
   return `${t}-${r}`;
 }

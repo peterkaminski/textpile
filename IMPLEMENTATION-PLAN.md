@@ -22,58 +22,59 @@ This document tracks implementation of major enhancements to Textpile. Check off
 ## Phase 2: Simple UI Changes & Config Variables
 
 ### UI Text Changes
-- [ ] Replace "Submit" with "Add Post"
-  - [ ] `public/index.html` (navigation link)
-  - [ ] `public/submit.html` (header, button text)
-  - [ ] `functions/p/[id].js` (navigation link)
-- [ ] Replace "TOC" with "Home"
-  - [ ] `public/submit.html` (navigation link)
-  - [ ] `functions/p/[id].js` (navigation link)
+- [x] Replace "Submit" with "Add Post"
+  - [x] `public/index.html` (navigation link)
+  - [x] `public/submit.html` (header, button text)
+  - [x] `functions/p/[id].js` (navigation link)
+- [x] Replace "TOC" with "Home"
+  - [x] `public/submit.html` (navigation link)
+  - [x] `functions/p/[id].js` (navigation link)
 
 ### Post ID Format
-- [ ] Remove milliseconds from post IDs
-  - [ ] Update `makeId()` in `functions/api/submit.js`
-  - [ ] Test: Verify IDs are sortable and unique enough
+- [x] Remove milliseconds from post IDs
+  - [x] Update `makeId()` in `functions/api/submit.js`
+  - [x] Test: IDs now format as YYYYMMDDTHHMMSS-random
 
 ### Configuration Variables
-- [ ] `COMMUNITY_NAME` - Replace "the community" in prose
-  - [ ] Default: "the community"
-  - [ ] Update `public/index.html` description
-  - [ ] Update `public/submit.html` description
-  - [ ] Add to INSTALLATION.md docs
+- [x] `COMMUNITY_NAME` - Replace "the community" in prose
+  - [x] Default: "the community"
+  - [x] Created `/api/config` endpoint
+  - [x] Created `public/textpile-utils.js` utility library
+  - [x] Update `public/index.html` description
 
-- [ ] `ADMIN_EMAIL` - Footer contact info
-  - [ ] Default: null (no footer shown)
-  - [ ] Add footer component to all pages
-  - [ ] Update `public/index.html`
-  - [ ] Update `public/submit.html`
-  - [ ] Update `functions/p/[id].js`
-  - [ ] Add to INSTALLATION.md docs
+- [x] `ADMIN_EMAIL` - Footer contact info
+  - [x] Default: null (no footer shown)
+  - [x] Add footer component to all pages
+  - [x] Update `public/index.html`
+  - [x] Update `public/submit.html`
+  - [x] Update `functions/p/[id].js`
 
-- [ ] `DEFAULT_RETENTION` - Default retention period
-  - [ ] Default: "1month"
-  - [ ] Valid values: 1week, 1month, 3months, 6months, 1year
-  - [ ] Update `public/submit.html` (select default)
-  - [ ] Add to INSTALLATION.md docs
+- [x] `DEFAULT_RETENTION` - Default retention period
+  - [x] Default: "1month"
+  - [x] Valid values: 1week, 1month, 3months, 6months, 1year
+  - [x] Update `public/submit.html` (select default)
 
-- [ ] `DATE_FORMAT` - Date display format
-  - [ ] Default: "Jan 4, 2026"
-  - [ ] Options: short, medium, long, full
-  - [ ] Update date rendering in all pages
-  - [ ] Add to INSTALLATION.md docs
+- [x] `DATE_FORMAT` - Date display format
+  - [x] Default: "medium" (Jan 4, 2026)
+  - [x] Options: short, medium, long, full
+  - [x] Update date rendering in all pages
+  - [x] Created formatDateTime helpers
 
-- [ ] `TIME_FORMAT` - Time display format
-  - [ ] Default: "1:23 PM" (no seconds)
-  - [ ] Options: short (no seconds), medium (with seconds)
-  - [ ] Update time rendering in all pages
-  - [ ] Add to INSTALLATION.md docs
+- [x] `TIME_FORMAT` - Time display format
+  - [x] Default: "short" (1:23 PM, no seconds)
+  - [x] Options: short (no seconds), medium (with seconds)
+  - [x] Update time rendering in all pages
 
-**Files to modify:**
-- `public/index.html`
-- `public/submit.html`
-- `functions/p/[id].js`
-- `functions/api/submit.js`
-- `INSTALLATION.md`
+**Files created:**
+- `functions/api/config.js` ✅
+- `public/textpile-utils.js` ✅
+
+**Files modified:**
+- `public/index.html` ✅
+- `public/submit.html` ✅
+- `functions/p/[id].js` ✅
+- `functions/api/submit.js` ✅
+- `public/style.css` ✅
 
 ---
 

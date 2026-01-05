@@ -10,24 +10,29 @@
     <header>
       <h1>Textpile</h1>
       <div class="actions">
-        <a href="/submit">Submit</a>
+        <a href="/submit">Add Post</a>
       </div>
     </header>
 
     <p class="small">
-      Long-form posts for the community. No author attribution stored here; keep metadata in your own records.
+      Long-form posts for <span id="community-name">the community</span>. No author attribution stored here; keep metadata in your own records.
     </p>
 
     <div id="status" class="small">Loading…</div>
     <div id="list"></div>
 
     <script type="module">
+      import { initPage, formatDateTime } from '/textpile-utils.js';
+
       const status = document.getElementById("status");
       const list = document.getElementById("list");
 
       function escapeHtml(s) {
         return s.replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
       }
+
+      // Initialize page (load config, apply community name, add footer)
+      await initPage();
 
       try {
         const res = await fetch("/api/index", { headers: { "accept": "application/json" }});
@@ -39,7 +44,7 @@
 
         list.innerHTML = items.map(it => {
           const title = it.title ? escapeHtml(it.title) : "(untitled)";
-          const created = it.createdAt ? new Date(it.createdAt).toLocaleString() : "";
+          const created = it.createdAt ? formatDateTime(it.createdAt) : "";
           const url = it.url ? escapeHtml(it.url) : "#";
           return `
             <div class="card">
