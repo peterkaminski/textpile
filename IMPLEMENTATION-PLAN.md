@@ -81,7 +81,7 @@ This document tracks implementation of major enhancements to Textpile. Check off
 ## Phase 3: Admin Interface
 
 ### Admin Page (`/admin`)
-- [ ] Create `public/admin.html`
+- [x] Create `public/admin.html`
   - [ ] Token authentication form
   - [ ] Post list with checkboxes
   - [ ] Delete selected button

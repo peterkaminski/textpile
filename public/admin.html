@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Admin · Textpile</title>
+    <link rel="stylesheet" href="/style.css" />
+    <style>
+      .admin-section { margin: 24px 0; padding: 20px; border: 1px solid rgba(127,127,127,.35); border-radius: 12px; }
+      .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 16px 0; }
+      .stat-card { padding: 16px; background: rgba(127,127,127,.05); border-radius: 8px; }
+      .stat-value { font-size: 24px; font-weight: bold; margin: 8px 0; }
+      .stat-label { font-size: 13px; opacity: .8; }
+      table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+      th, td { padding: 8px; text-align: left; border-bottom: 1px solid rgba(127,127,127,.2); }
+      th { font-weight: 600; }
+      .btn-danger { background: #dc3545; color: white; border-color: #dc3545; }
+      .btn-danger:hover { background: #c82333; }
+      .hidden { display: none; }
+      .warning { color: #ff9800; }
+      .error { color: #f44336; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Admin Panel</h1>
+      <div class="actions">
+        <a href="/">Home</a>
+        <a href="/submit">Add Post</a>
+      </div>
+    </header>
+
+    <div id="login-section">
+      <div class="admin-section">
+        <h2>Authentication Required</h2>
+        <form id="login-form" class="row">
+          <label>
+            Admin Token
+            <input type="password" id="admin-token" placeholder="Enter ADMIN_TOKEN" required />
+          </label>
+          <button type="submit">Access Admin Panel</button>
+          <span id="login-error" class="small error"></span>
+        </form>
+      </div>
+    </div>
+
+    <div id="admin-panel" class="hidden">
+      <div class="admin-section">
+        <h2>Storage Statistics</h2>
+        <div id="stats" class="stats-grid"></div>
+      </div>
+
+      <div class="admin-section">
+        <h2>All Posts</h2>
+        <div class="actions" style="margin-bottom: 16px;">
+          <button id="refresh-btn">Refresh List</button>
+          <button id="delete-selected-btn" class="btn-danger">Delete Selected</button>
+          <button id="export-btn">Export All Posts</button>
+        </div>
+        <div id="posts-list"></div>
+      </div>
+
+      <div class="admin-section">
+        <h2>Import Posts</h2>
+        <form id="import-form" class="row">
+          <label>
+            JSONL File
+            <input type="file" id="import-file" accept=".jsonl,.json,.txt" required />
+          </label>
+          <button type="submit">Import Posts</button>
+          <span id="import-msg" class="small"></span>
+        </form>
+      </div>
+
+      <div class="admin-section">
+        <h2>Danger Zone</h2>
+        <button id="clear-all-btn" class="btn-danger">Clear All Posts</button>
+        <p class="small">This will delete ALL posts permanently. This cannot be undone.</p>
+      </div>
+    </div>
+
+    <script type="module">
+      let TOKEN = "";
+
+      document.getElementById("login-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        TOKEN = document.getElementById("admin-token").value.trim();
+        const error = document.getElementById("login-error");
+
+        try {
+          const res = await fetch("/api/admin/stats", {
+            headers: { "Authorization": `Bearer ${TOKEN}` }
+          });
+
+          if (!res.ok) {
+            throw new Error("Invalid token");
+          }
+
+          document.getElementById("login-section").classList.add("hidden");
+          document.getElementById("admin-panel").classList.remove("hidden");
+          loadStats();
+          loadPosts();
+        } catch (err) {
+          error.textContent = "Invalid admin token";
+        }
+      });
+
+      async function loadStats() {
+        const res = await fetch("/api/admin/stats", {
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          const stats = data.stats;
+          const pct = stats.percentageUsed;
+          const pctClass = pct > 95 ? 'error' : pct > 80 ? 'warning' : '';
+
+          document.getElementById("stats").innerHTML = `
+            <div class="stat-card">
+              <div class="stat-label">Total Posts</div>
+              <div class="stat-value">${stats.totalPosts}</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Storage Used</div>
+              <div class="stat-value">${(stats.estimatedSize / 1048576).toFixed(2)} MB</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Storage Limit</div>
+              <div class="stat-value">${(stats.maxKvSize / 1048576).toFixed(0)} MB</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-label">Usage</div>
+              <div class="stat-value ${pctClass}">${pct.toFixed(1)}%</div>
+            </div>
+          `;
+        }
+      }
+
+      async function loadPosts() {
+        const res = await fetch("/api/admin/posts", {
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          const posts = data.posts;
+          if (posts.length === 0) {
+            document.getElementById("posts-list").innerHTML = '<p class="small">No posts yet.</p>';
+            return;
+          }
+
+          document.getElementById("posts-list").innerHTML = `
+            <table>
+              <thead>
+                <tr>
+                  <th><input type="checkbox" id="select-all" /></th>
+                  <th>Title</th>
+                  <th>Created</th>
+                  <th>Expires</th>
+                  <th>Size</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${posts.map(post => `
+                  <tr>
+                    <td><input type="checkbox" class="post-checkbox" data-id="${post.id}" /></td>
+                    <td><a href="${post.url}" target="_blank">${escapeHtml(post.title)}</a>${post.pinned ? ' 📌' : ''}</td>
+                    <td class="small">${new Date(post.createdAt).toLocaleString()}</td>
+                    <td class="small">${post.expiresAt ? new Date(post.expiresAt).toLocaleString() : 'Never'}</td>
+                    <td class="small">${(post.size / 1024).toFixed(1)} KB</td>
+                    <td><button class="delete-post-btn" data-id="${post.id}">Delete</button></td>
+                  </tr>
+                `).join('')}
+              </tbody>
+            </table>
+          `;
+
+          document.getElementById("select-all").addEventListener("change", (e) => {
+            document.querySelectorAll(".post-checkbox").forEach(cb => cb.checked = e.target.checked);
+          });
+
+          document.querySelectorAll(".delete-post-btn").forEach(btn => {
+            btn.addEventListener("click", async (e) => {
+              const id = e.target.dataset.id;
+              if (confirm(`Delete post ${id}?`)) {
+                await deletePost(id);
+                loadPosts();
+                loadStats();
+              }
+            });
+          });
+        }
+      }
+
+      async function deletePost(id) {
+        await fetch("/api/remove", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${TOKEN}`
+          },
+          body: JSON.stringify({ id, token: TOKEN })
+        });
+      }
+
+      document.getElementById("delete-selected-btn").addEventListener("click", async () => {
+        const selected = Array.from(document.querySelectorAll(".post-checkbox:checked")).map(cb => cb.dataset.id);
+        if (selected.length === 0) {
+          alert("No posts selected");
+          return;
+        }
+        if (confirm(`Delete ${selected.length} posts?`)) {
+          for (const id of selected) {
+            await deletePost(id);
+          }
+          loadPosts();
+          loadStats();
+        }
+      });
+
+      document.getElementById("export-btn").addEventListener("click", async () => {
+        const res = await fetch("/api/admin/export", {
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+        const blob = await res.blob();
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `textpile-export-${new Date().toISOString().split('T')[0]}.jsonl`;
+        a.click();
+      });
+
+      document.getElementById("import-form").addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const file = document.getElementById("import-file").files[0];
+        const msg = document.getElementById("import-msg");
+
+        if (!file) {
+          msg.textContent = "Please select a file";
+          return;
+        }
+
+        const text = await file.text();
+        const res = await fetch("/api/admin/import", {
+          method: "POST",
+          headers: {
+            "Content-Type": "text/plain",
+            "Authorization": `Bearer ${TOKEN}`
+          },
+          body: text
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          msg.textContent = `Imported ${data.imported} of ${data.total} posts`;
+          loadPosts();
+          loadStats();
+        } else {
+          msg.textContent = data.error || "Import failed";
+        }
+      });
+
+      document.getElementById("clear-all-btn").addEventListener("click", async () => {
+        if (!confirm("Are you SURE you want to delete ALL posts? This cannot be undone!")) return;
+        if (!confirm("Final confirmation: Delete everything?")) return;
+
+        const res = await fetch("/api/admin/clear", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${TOKEN}`
+          }
+        });
+
+        const data = await res.json();
+        if (data.success) {
+          alert(`Deleted ${data.deleted} posts`);
+          loadPosts();
+          loadStats();
+        }
+      });
+
+      document.getElementById("refresh-btn").addEventListener("click", () => {
+        loadPosts();
+        loadStats();
+      });
+
+      function escapeHtml(s) {
+        return String(s).replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
+      }
+    </script>
+  </body>
+</html>
