@@ -9,7 +9,7 @@ let CONFIG = {
   defaultRetention: "1month",
   dateFormat: "medium",
   timeFormat: "short",
-  textpileVersion: "0.3.0",
+  textpileVersion: "0.3.1",
 };
 
 // Load configuration from API

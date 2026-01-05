@@ -7,6 +7,96 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.3.1] - 2026-01-04
+
+### Added
+
+- **Instance Customization**
+  - `INSTANCE_NAME` environment variable (default: "Textpile")
+  - Instance name appears in page titles: "Page Title - Instance Name"
+  - Instance name appears in homepage H1 header
+  - Customizable per deployment for multi-instance operators
+
+- **Copy URL Feature**
+  - "Copy URL" button added to post view (next to "Copy text")
+  - Copies current post URL to clipboard
+  - Shows "URL copied!" confirmation message
+  - Useful for sharing posts or saving references
+
+- **About Page** (`/about`)
+  - Comprehensive use notes and policies
+  - Explains what Textpile is and is not
+  - Details on attribution and identity handling
+  - Retention and expiration policies
+  - Use expectations and guidelines
+  - Operation and shutdown policy
+
+- **Configuration Documentation** (`CONFIGURATION.md`)
+  - Complete reference for all 10 environment variables
+  - Organized by category (Identity, Access Control, Retention, Display, Size)
+  - Includes defaults, examples, and valid values
+  - Quick reference table
+  - Security best practices
+  - Troubleshooting guide
+
+- **Improved Page Copy**
+  - Homepage now links to `/about` for important use notes
+  - Submit page includes clear disclosure: "No author identity is collected. IP addresses are logged."
+  - All pages link to `/about` for full details
+  - Copy emphasizes ephemerality and author responsibility
+
+### Changed
+
+- **Enhanced Footer** (all pages)
+  - New format: "This is an instance of Textpile {version}, operated by {email}."
+  - Always shown (even if ADMIN_EMAIL not configured)
+  - Links to GitHub repository
+  - Shows Textpile version (0.3.1)
+  - Shows operator email if ADMIN_EMAIL is set
+
+- **Page Titles**
+  - All pages now use dynamic titles with instance name
+  - Format: "{Page Title} - {Instance Name}"
+  - Homepage updates H1 to show instance name
+  - Better browser tab identification for multi-instance users
+
+- **Post View Improvements**
+  - Converted from server-side to client-side footer rendering
+  - Consistent footer format with other pages
+  - Added Copy URL button alongside Copy text button
+  - Dynamic page title based on post title
+
+- **Configuration Access**
+  - `/api/config` now includes `instanceName` and `textpileVersion`
+  - Cached for 5 minutes for performance
+  - Client-side utilities use config for all dynamic content
+
+- **textpile-utils.js Enhancements**
+  - Added `updatePageTitle()` function for dynamic page titles
+  - Added `updateH1WithInstanceName()` for homepage branding
+  - Updated `addFooter()` with new format and version display
+  - Modified `initPage()` to accept options: `pageTitle`, `updateH1`
+
+### Fixed
+
+- Removed redundant `renderFooter()` function from post view
+- Removed unused `adminEmail` variable from post view server code
+- Consistent footer rendering across all pages
+
+### Documentation
+
+- Created **CONFIGURATION.md** with comprehensive environment variable documentation
+- Updated **INSTALLATION.md** to reference CONFIGURATION.md for detailed config info
+- Added **IMPROVED-COPY.md** documenting copy improvements and rationale
+- Updated **LICENSE** with Use Notice (non-binding) section clarifying intended use
+
+### Notes
+
+- **No breaking changes**: All new features are backwards compatible
+- **Instance name**: Defaults to "Textpile" if not configured
+- **Footer**: Now always rendered, even without admin email configured
+- Version number hardcoded in `/api/config` - update when releasing new versions
+
 ## [0.3.0] - 2026-01-04
 
 ### Added
@@ -302,7 +392,8 @@ We follow [Semantic Versioning](https://semver.org/):
 
 **Note**: Dates use YYYY-MM-DD format (ISO 8601).
 
-[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.0...HEAD
+[Unreleased]: https://github.com/peterkaminski/textpile/compare/v0.3.1...HEAD
+[0.3.1]: https://github.com/peterkaminski/textpile/compare/v0.3.0...v0.3.1
 [0.3.0]: https://github.com/peterkaminski/textpile/compare/v0.2.1...v0.3.0
 [0.2.1]: https://github.com/peterkaminski/textpile/compare/v0.2.0...v0.2.1
 [0.2.0]: https://github.com/peterkaminski/textpile/compare/v0.1.0...v0.2.0
