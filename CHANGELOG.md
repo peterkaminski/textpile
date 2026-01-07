@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.4.2] - 2026-01-06
+
+### Changed
+
+- **Header Layout Improvements**
+  - Replaced header `<h1>` with persistent instance identity link
+  - Moved page-specific `<h1>` elements into main content area
+  - Applied consistently across all pages (index, about, submit, admin, posts)
+  - Instance name now links to homepage from all pages
+  - Improved semantic HTML structure and visual hierarchy
+
+- **JavaScript Improvements**
+  - Renamed `updateH1WithInstanceName()` to `updateInstanceName()` for clarity
+  - Simplified `initPage()` - now always sets instance name and page title
+  - Admin page now uses `initPage()` for consistent configuration loading
+
+- **CSS Updates**
+  - Added `.instance-name` style (14px, 75% opacity) for visual de-emphasis
+
+Files changed: 7 (public/index.html, public/submit.html, public/about.html, public/admin.html, functions/p/[id].js, public/textpile-utils.js, public/style.css)
+
+Merged from PR #1: "Refine header layout to add persistent instance link and unify title handling"
+
 ## [0.4.1] - 2026-01-05
 
 ### Changed

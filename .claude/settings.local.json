@@ -15,7 +15,11 @@
       "Bash(node scripts/update-version.js:*)",
       "Bash(curl:*)",
       "Bash(node test-date-formatter.mjs:*)",
-      "Bash(node -e:*)"
+      "Bash(node -e:*)",
+      "Bash(git fetch:*)",
+      "Bash(git checkout:*)",
+      "Bash(git diff:*)",
+      "Bash(git pull:*)"
     ]
   }
 }
