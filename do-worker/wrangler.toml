@@ -1,0 +1,12 @@
+name = "textpile-do"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+[durable_objects]
+bindings = [
+  { name = "POST_ID_ALLOCATOR", class_name = "PostIdAllocator" }
+]
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["PostIdAllocator"]
