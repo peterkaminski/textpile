@@ -1,0 +1,18 @@
+name = "textpile"
+compatibility_date = "2024-01-01"
+
+# Durable Objects
+[durable_objects]
+bindings = [
+  { name = "POST_ID_ALLOCATOR", class_name = "PostIdAllocator", script_name = "textpile" }
+]
+
+# Migrations for Durable Objects
+[[migrations]]
+tag = "v1"
+new_classes = ["PostIdAllocator"]
+
+# Export Durable Object class
+[[rules]]
+type = "ESModule"
+globs = ["**/*.js"]

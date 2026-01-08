@@ -7,6 +7,86 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.6.0] - 2026-01-07
+
+### ⚠️ BREAKING CHANGES
+
+**New Post ID Format**
+
+This release introduces a completely new ID format using Durable Objects for allocation.
+
+**Old format (v0.5.0):** `20260107T211418-k4j2n5` (22 characters, timestamp-based)
+
+**New format (v0.6.0):** `260107-bcf` (10 characters, day-based with random slug)
+
+**Impact:**
+- No backwards compatibility needed (test instances only)
+- Old posts can be cleared before deploying
+- Both ID formats continue to work in URLs
+- All new posts use the new format
+
+**Migration:** Clear all existing posts before deploying (instructions in POST-ID-V2.md)
+
+### Added
+
+- **Durable Object ID Allocator**
+  - New `PostIdAllocator` Durable Object class for unique ID generation
+  - Guaranteed uniqueness across all Workers
+  - SQLite-backed storage for allocation tracking
+  - Cryptographically secure random slug generation
+
+- **Improved ID Format**
+  - Format: `YYMMDD-slug` (e.g., `260107-bcf`)
+  - Consonant-only alphabet: `bcdfghjkmnpqrstvwxyz` (20 chars)
+  - Progressive slug lengths: 2, 3, 4, or 5 characters
+  - Much shorter and more readable than previous format
+
+- **Testing**
+  - Added unit tests for `formatDayUTC()` and `randomSlug()`
+  - Added integration tests for ID format validation
+  - Test suite uses Vitest
+
+- **Documentation**
+  - Added POST-ID-V2.md with comprehensive explanation
+  - Documented alphabet design, capacity analysis, and migration
+  - Added troubleshooting guide
+
+- **Version Synchronization**
+  - Updated `scripts/update-version.js` to sync package.json version
+  - All version numbers now updated automatically
+
+### Changed
+
+- **Submit Endpoint** (`functions/api/submit.js`)
+  - Replaced `makeId()` with async `allocateId()` using Durable Object
+  - Better error handling for allocation failures (HTTP 503)
+  - ID generation now takes ~10-20ms (DO call overhead)
+
+- **Configuration**
+  - Added `wrangler.toml` for Durable Object binding
+  - Added `_worker.js` to export DO class
+  - Updated build configuration for ESModule support
+
+- **Capacity**
+  - 2-char slugs: 400 IDs/day
+  - 3-char slugs: 8,000 IDs/day
+  - 4-char slugs: 160,000 IDs/day
+  - 5-char slugs: 3.2M IDs/day
+
+Files added:
+- src/PostIdAllocator.js
+- src/PostIdAllocator.test.js
+- wrangler.toml
+- _worker.js
+- POST-ID-V2.md
+
+Files modified:
+- functions/api/submit.js
+- scripts/update-version.js
+- package.json (added vitest, test scripts)
+
+**See POST-ID-V2.md for full details and migration guide.**
+
 ## [0.5.0] - 2026-01-06
 
 ### Added

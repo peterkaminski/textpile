@@ -2,11 +2,22 @@ function nowIso() {
   return new Date().toISOString();
 }
 
-function makeId() {
-  // Sortable: YYYYMMDDTHHMMSS + random suffix (no milliseconds)
-  const t = new Date().toISOString().replace(/[-:.Z]/g, "").slice(0, 15); // Remove milliseconds
-  const r = Math.random().toString(36).slice(2, 8);
-  return `${t}-${r}`;
+async function allocateId(env) {
+  // Use Durable Object to allocate unique ID
+  const doId = env.POST_ID_ALLOCATOR.idFromName("global");
+  const stub = env.POST_ID_ALLOCATOR.get(doId);
+
+  const response = await stub.fetch("https://do/allocate", {
+    method: "POST"
+  });
+
+  if (!response.ok) {
+    const error = await response.json();
+    throw new Error(error.error || "ID allocation failed");
+  }
+
+  const { id } = await response.json();
+  return id;
 }
 
 function clampTitle(title) {
@@ -93,9 +104,17 @@ export async function onRequestPost({ request, env }) {
   // No author identity accepted/stored. Title only.
   const title = clampTitle(data?.title);
   const pinned = data?.pinned === true; // Only accept explicit true
-  const id = makeId();
   const createdAt = nowIso();
   const expiresAt = new Date(Date.now() + expirySeconds * 1000).toISOString();
+
+  // Allocate unique ID from Durable Object
+  let id;
+  try {
+    id = await allocateId(env);
+  } catch (err) {
+    return Response.json({ error: "Failed to allocate post ID. Please try again." }, { status: 503 });
+  }
+
   const url = `/p/${encodeURIComponent(id)}`;
 
   // Store post with TTL and metadata
