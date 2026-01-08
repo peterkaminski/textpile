@@ -5,15 +5,5 @@ pages_build_output_dir = "public"
 # Durable Objects
 [durable_objects]
 bindings = [
-  { name = "POST_ID_ALLOCATOR", class_name = "PostIdAllocator", script_name = "textpile" }
+  { name = "POST_ID_ALLOCATOR", class_name = "PostIdAllocator" }
 ]
-
-# Migrations for Durable Objects
-[[migrations]]
-tag = "v1"
-new_classes = ["PostIdAllocator"]
-
-# Export Durable Object class
-[[rules]]
-type = "ESModule"
-globs = ["**/*.js"]
