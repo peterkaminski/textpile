@@ -69,10 +69,10 @@ export async function onRequestPost({ request, env }) {
   let index = rawIndex ? JSON.parse(rawIndex) : [];
 
   // Filter out expired entries
-  const now = Date.now();
+  const nowTimestamp = Date.now();
   index = index.filter(item => {
     if (!item.expiresAt) return true; // Keep items without expiry (legacy)
-    return new Date(item.expiresAt).getTime() > now;
+    return new Date(item.expiresAt).getTime() > nowTimestamp;
   });
 
   // Find and update the post in the index

@@ -21,7 +21,8 @@
       "Bash(git diff:*)",
       "Bash(git pull:*)",
       "Bash(git show:*)",
-      "Bash(cat:*)"
+      "Bash(cat:*)",
+      "Bash(git merge:*)"
     ]
   }
 }

@@ -73,6 +73,13 @@ This release introduces a completely new ID format using Durable Objects for all
   - 4-char slugs: 160,000 IDs/day
   - 5-char slugs: 3.2M IDs/day
 
+### Fixed
+
+- **Build Error in Pin Endpoint** (merged from v0.5.1)
+  - Fixed duplicate variable declaration (`now`) in `/api/admin/pin` endpoint
+  - Renamed second instance to `nowTimestamp` to avoid conflict
+  - Bug was causing build failures on Cloudflare Pages deployment
+
 Files added:
 - src/PostIdAllocator.js
 - src/PostIdAllocator.test.js
@@ -82,10 +89,23 @@ Files added:
 
 Files modified:
 - functions/api/submit.js
+- functions/api/admin/pin.js (bugfix from v0.5.1)
 - scripts/update-version.js
 - package.json (added vitest, test scripts)
 
 **See POST-ID-V2.md for full details and migration guide.**
+
+## [0.5.1] - 2026-01-07
+
+### Fixed
+
+- **Build Error in Pin Endpoint**
+  - Fixed duplicate variable declaration (`now`) in `/api/admin/pin` endpoint
+  - Renamed second instance to `nowTimestamp` to avoid conflict
+  - This was causing build failures on Cloudflare Pages deployment
+  - Bug introduced in v0.5.0 when adding automatic index cleanup
+
+Files changed: 1 (functions/api/admin/pin.js)
 
 ## [0.5.0] - 2026-01-06
 
