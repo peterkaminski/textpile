@@ -396,9 +396,23 @@ wrangler pages deployment tail
 
 Shows live function invocations, errors, and console.log output.
 
-### Periodic Cleanup
+### Automatic Cleanup
 
-**Posts auto-expire**, so no manual cleanup needed. However, you can:
+**Textpile automatically maintains itself with zero manual intervention:**
+
+1. **Post Content**: Cloudflare KV automatically deletes posts when they expire (via TTL)
+2. **Index Cleanup**: Expired entries are automatically removed from the index during:
+   - Homepage loads (`/api/index`)
+   - New post submissions (`/api/submit`)
+   - Post deletions (`/api/remove`)
+   - Pin/unpin operations (`/api/admin/pin`)
+
+**Index Capacity:**
+- Maximum 10,000 active posts in the index
+- Expired entries don't count toward this limit (auto-filtered)
+- Oldest posts are dropped if the limit is reached (after removing expired entries)
+
+**No manual cleanup required** - the system self-maintains. However, you can:
 
 **Manually expire old posts** (if needed):
 ```bash
@@ -506,7 +520,7 @@ wrangler kv:key list --binding=KV | jq '[.[].metadata.size] | add'
 **Reduce Storage Usage:**
 1. **Shorter retention periods**: Default to `1week` instead of `1month`
 2. **Smaller post size limit**: Lower `MAX_POST_SIZE` to 512 KB or 256 KB
-3. **Reduce index cap**: In submit.js, change from 1000 to 500 posts
+3. **Reduce index cap**: In submit.js, change from 10,000 to 5,000 posts (though expired entries are auto-cleaned)
 4. **Regular exports**: Export and delete old posts periodically
 
 **Estimate Post Size:**

@@ -109,7 +109,14 @@ export async function onRequestPost({ request, env }) {
   // For low-traffic sites, this is acceptable. Index will eventually be consistent.
   // If strict ordering is required, consider using Durable Objects or atomic operations.
   const rawIndex = await env.KV.get("index");
-  const index = rawIndex ? JSON.parse(rawIndex) : [];
+  let index = rawIndex ? JSON.parse(rawIndex) : [];
+
+  // Filter out expired entries before adding new entry
+  const now = Date.now();
+  index = index.filter(item => {
+    if (!item.expiresAt) return true; // Keep items without expiry (legacy)
+    return new Date(item.expiresAt).getTime() > now;
+  });
 
   const entry = { id, title, createdAt, expiresAt, pinned, url };
 
@@ -121,7 +128,7 @@ export async function onRequestPost({ request, env }) {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
-  await env.KV.put("index", JSON.stringify(next.slice(0, 1000)));
+  await env.KV.put("index", JSON.stringify(next.slice(0, 10000)));
 
   return Response.json({ success: true, id, url }, { status: 201 });
 }

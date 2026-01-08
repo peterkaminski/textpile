@@ -49,8 +49,9 @@ functions/
 
 ### Index Storage
 - **Key**: `index`
-- **Value**: JSON array of post entries `[{ id, title, createdAt, url, expiresAt }, ...]`
-- **Ordering**: Newest first, capped at 1000 entries
+- **Value**: JSON array of post entries `[{ id, title, createdAt, url, expiresAt, pinned }, ...]`
+- **Ordering**: Pinned first, then newest first, capped at 10,000 entries
+- **Cleanup**: Expired entries automatically removed during reads and writes
 
 ### ID Format
 `YYYYMMDDTHHMMSSZ-${random}` - sortable by creation time
@@ -139,14 +140,26 @@ The index update operation in `functions/api/submit.js` follows a read-modify-wr
 ```javascript
 // Read
 const rawIndex = await env.KV.get("index");
-const index = rawIndex ? JSON.parse(rawIndex) : [];
+let index = rawIndex ? JSON.parse(rawIndex) : [];
+
+// Filter expired entries
+const now = Date.now();
+index = index.filter(item => {
+  if (!item.expiresAt) return true;
+  return new Date(item.expiresAt).getTime() > now;
+});
 
 // Modify
-const entry = { id, title, createdAt, expiresAt, url };
-const next = [entry, ...index].slice(0, 1000);
+const entry = { id, title, createdAt, expiresAt, pinned, url };
+const next = [entry, ...index];
+next.sort((a, b) => {
+  if (a.pinned && !b.pinned) return -1;
+  if (!a.pinned && b.pinned) return 1;
+  return new Date(b.createdAt) - new Date(a.createdAt);
+});
 
-// Write
-await env.KV.put("index", JSON.stringify(next));
+// Write (capped at 10,000)
+await env.KV.put("index", JSON.stringify(next.slice(0, 10000)));
 ```
 
 **Impact**: If two posts are submitted at exactly the same time, one entry might be lost from the index. The post itself is still stored and accessible via direct URL.

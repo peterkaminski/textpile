@@ -7,6 +7,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.0] - 2026-01-06
+
+### Added
+
+- **Automatic Index Cleanup**
+  - Expired entries are now automatically removed from the index during reads and writes
+  - Cleanup happens on homepage loads, post submissions, deletions, and pin operations
+  - Prevents accumulation of dead entries in the index
+  - Maintains index efficiency without manual intervention
+
+### Changed
+
+- **Increased Index Capacity**
+  - Index cap increased from 1,000 to 10,000 active posts
+  - Expired entries don't count toward this limit (auto-filtered)
+  - All endpoints updated: `/api/submit`, `/api/index`, `/api/remove`, `/api/admin/pin`, `/api/admin/import`
+
+- **Documentation Updates**
+  - Updated CLAUDE.md to reflect new 10,000 entry cap and auto-cleanup
+  - Updated ADMIN-GUIDE.md with automatic cleanup behavior details
+  - Added comprehensive cleanup documentation to Monitoring section
+
+**Why this is 0.5.0 (minor version):** New automatic cleanup feature changes system behavior, though backwards compatible.
+
+Files changed: 5 (functions/api/index.js, functions/api/submit.js, functions/api/remove.js, functions/api/admin/pin.js, functions/api/admin/import.js)
+
 ## [0.4.3] - 2026-01-06
 
 ### Added

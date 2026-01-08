@@ -16,6 +16,11 @@ export async function onRequestGet({ env }) {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
+  // Cleanup: if expired items were found, write back the cleaned index
+  if (activeItems.length < items.length) {
+    await env.KV.put("index", JSON.stringify(activeItems));
+  }
+
   return Response.json({ success: true, items: activeItems }, {
     headers: {
       "cache-control": "no-store",

@@ -103,7 +103,7 @@ export async function onRequestPost({ request, env }) {
     return new Date(b.createdAt) - new Date(a.createdAt);
   });
 
-  await env.KV.put("index", JSON.stringify(index.slice(0, 1000)));
+  await env.KV.put("index", JSON.stringify(index.slice(0, 10000)));
 
   return Response.json({
     success: true,

@@ -66,7 +66,14 @@ export async function onRequestPost({ request, env }) {
 
   // Update index
   const rawIndex = await env.KV.get("index");
-  const index = rawIndex ? JSON.parse(rawIndex) : [];
+  let index = rawIndex ? JSON.parse(rawIndex) : [];
+
+  // Filter out expired entries
+  const now = Date.now();
+  index = index.filter(item => {
+    if (!item.expiresAt) return true; // Keep items without expiry (legacy)
+    return new Date(item.expiresAt).getTime() > now;
+  });
 
   // Find and update the post in the index
   const entry = index.find(item => item.id === id);

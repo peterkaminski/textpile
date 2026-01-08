@@ -46,7 +46,15 @@ export async function onRequestPost({ request, env }) {
 
   const rawIndex = await env.KV.get("index");
   const index = rawIndex ? JSON.parse(rawIndex) : [];
-  const next = index.filter((it) => it?.id !== id);
+
+  // Filter out deleted post AND expired entries
+  const now = Date.now();
+  const next = index.filter((it) => {
+    if (it?.id === id) return false; // Remove deleted post
+    if (!it?.expiresAt) return true; // Keep items without expiry (legacy)
+    return new Date(it.expiresAt).getTime() > now; // Remove expired
+  });
+
   await env.KV.put("index", JSON.stringify(next));
 
   return Response.json({ success: true, message: "Post removed successfully." }, { status: 200 });
