@@ -3,21 +3,33 @@ function nowIso() {
 }
 
 async function allocateId(env) {
-  // Use Durable Object to allocate unique ID
-  const doId = env.POST_ID_ALLOCATOR.idFromName("global");
-  const stub = env.POST_ID_ALLOCATOR.get(doId);
-
-  const response = await stub.fetch("https://do/allocate", {
-    method: "POST"
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.error || "ID allocation failed");
+  // Check if Durable Object binding exists
+  if (!env.POST_ID_ALLOCATOR) {
+    console.error("POST_ID_ALLOCATOR binding not found. Check Cloudflare Pages settings.");
+    throw new Error("POST_ID_ALLOCATOR binding not configured");
   }
 
-  const { id } = await response.json();
-  return id;
+  try {
+    // Use Durable Object to allocate unique ID
+    const doId = env.POST_ID_ALLOCATOR.idFromName("global");
+    const stub = env.POST_ID_ALLOCATOR.get(doId);
+
+    const response = await stub.fetch("https://do/allocate", {
+      method: "POST"
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      console.error("DO allocation failed:", error);
+      throw new Error(error.error || "ID allocation failed");
+    }
+
+    const { id } = await response.json();
+    return id;
+  } catch (err) {
+    console.error("Error in allocateId:", err.message, err.stack);
+    throw err;
+  }
 }
 
 function clampTitle(title) {
@@ -112,7 +124,18 @@ export async function onRequestPost({ request, env }) {
   try {
     id = await allocateId(env);
   } catch (err) {
-    return Response.json({ error: "Failed to allocate post ID. Please try again." }, { status: 503 });
+    console.error("Submit failed during ID allocation:", err.message);
+
+    // Provide more specific error message
+    if (err.message.includes("binding not configured")) {
+      return Response.json({
+        error: "Server configuration error: Durable Object binding not found. Please contact the administrator."
+      }, { status: 503 });
+    }
+
+    return Response.json({
+      error: "Failed to allocate post ID. Please try again."
+    }, { status: 503 });
   }
 
   const url = `/p/${encodeURIComponent(id)}`;
