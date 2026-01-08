@@ -112,8 +112,8 @@ export async function onRequestPost({ request, env }) {
     metadata: { createdAt, title, expiresAt, pinned, allocToken }
   });
 
-  // Verify post write (cache bypass)
-  const verifyResult = await env.KV.getWithMetadata(`post:${id}`, { cacheTtl: 0 });
+  // Verify post write (minimum cache TTL)
+  const verifyResult = await env.KV.getWithMetadata(`post:${id}`, { cacheTtl: 30 });
   if (!verifyResult.value || !verifyResult.metadata) {
     console.error('Post write verification failed: post not found');
     return Response.json({

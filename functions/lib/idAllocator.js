@@ -61,15 +61,15 @@ async function tryAllocateId(kv, id) {
   // Step 1: Write claim
   await kv.put(claimKey, token, { expirationTtl: CLAIM_TTL_SECONDS });
 
-  // Step 2: Verify claim ownership (cache bypass)
-  const token2 = await kv.get(claimKey, { cacheTtl: 0 });
+  // Step 2: Verify claim ownership (minimum cache TTL)
+  const token2 = await kv.get(claimKey, { cacheTtl: 30 });
   if (token2 !== token) {
     // Another writer owns the claim
     return null;
   }
 
-  // Step 3: Check post existence (cache bypass)
-  const existing = await kv.get(postKey, { cacheTtl: 0 });
+  // Step 3: Check post existence (minimum cache TTL)
+  const existing = await kv.get(postKey, { cacheTtl: 30 });
   if (existing !== null) {
     // ID already taken
     return null;
