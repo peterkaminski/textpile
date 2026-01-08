@@ -74,7 +74,7 @@ This design choice dramatically lowers operational burden and makes clear that i
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed release notes and version history.
 
-**Current Version**: v0.5.0
+**Current Version**: v0.5.1
 
 ## Authorship & License
 

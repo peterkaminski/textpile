@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.5.1] - 2026-01-07
+
+### Fixed
+
+- **Build Error in Pin Endpoint**
+  - Fixed duplicate variable declaration (`now`) in `/api/admin/pin` endpoint
+  - Renamed second instance to `nowTimestamp` to avoid conflict
+  - This was causing build failures on Cloudflare Pages deployment
+  - Bug introduced in v0.5.0 when adding automatic index cleanup
+
+Files changed: 1 (functions/api/admin/pin.js)
+
 ## [0.5.0] - 2026-01-06
 
 ### Added
