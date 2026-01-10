@@ -336,6 +336,221 @@ if (postMonth === selectedMonth) {
 
 ---
 
+## TOTP Submit Token
+
+**Status:** Proposed
+
+Support Time-based One-Time Password (TOTP) as an alternative or supplement to the static `SUBMIT_TOKEN`.
+
+**Configuration (environment variables):**
+```
+SUBMIT_TOKEN_TYPE=totp       # Options: static, totp, both
+TOTP_SECRET=BASE32SECRET     # Base32-encoded TOTP secret
+TOTP_WINDOW=1                # Accept codes ±N windows (30s each)
+```
+
+**User flow with TOTP:**
+1. Instance operator generates TOTP secret and QR code
+2. Users add secret to authenticator app (Google Authenticator, Authy, 1Password, etc.)
+3. When submitting post, user enters current 6-digit TOTP code
+4. Server validates code using RFC 6238 algorithm
+5. If valid, post is accepted
+
+**Rationale:**
+- More secure than static shared password
+- Can be revoked by changing secret (forces all users to re-setup)
+- No shared secret to leak (each user has same secret but generates time-based codes)
+- Standard protocol supported by all authenticator apps
+
+**Implementation notes:**
+- Use lightweight TOTP library (or implement RFC 6238 directly)
+- TOTP secret is instance-wide (not per-user - maintains non-attribution)
+- Validate against time window (accept ±30-60 seconds for clock drift)
+- Consider rate limiting TOTP attempts per IP
+- Provide QR code generator for easier setup: `/setup-totp` (admin-only page)
+
+**Alternative: Hybrid mode**
+```
+SUBMIT_TOKEN_TYPE=both
+SUBMIT_TOKEN=static-password
+TOTP_SECRET=BASE32SECRET
+```
+Accept either static token OR valid TOTP code.
+
+**Security considerations:**
+- TOTP secret must be kept secure (same security level as ADMIN_TOKEN)
+- Consider rotating TOTP secret periodically
+- Log failed TOTP attempts for monitoring
+- TOTP doesn't prevent brute force if window is large
+
+**Drawbacks:**
+- More complex than static password
+- Requires users to have authenticator app
+- Setup is more involved (scan QR code or manually enter secret)
+- Clock synchronization issues can cause validation failures
+
+---
+
+## Environment Variables Reference Table (Admin Page)
+
+**Status:** Proposed
+
+Add a section to the admin page showing all possible environment variables and their current values.
+
+**UI Design:**
+```
+┌──────────────────────────────────────────────────────────┐
+│ Environment Configuration                                │
+├────────────────────┬─────────────────┬────────────────────┤
+│ Variable           │ Current Value   │ Possible Values    │
+├────────────────────┼─────────────────┼────────────────────┤
+│ INSTANCE_NAME      │ "My Textpile"   │ Any string         │
+│ COMMUNITY_NAME     │ "Our Community" │ Any string         │
+│ ADMIN_EMAIL        │ admin@example   │ Email address      │
+│ ADMIN_TOKEN        │ ******** (set)  │ Random string      │
+│ SUBMIT_TOKEN       │ (unset)         │ Random string      │
+│ DEFAULT_RETENTION  │ 1month          │ 1week, 1month,     │
+│                    │                 │ 3months, 6months,  │
+│                    │                 │ 1year              │
+│ MAX_POST_SIZE      │ 1048576         │ Bytes (number)     │
+│ DATE_FORMAT        │ "MMM D, YYYY"   │ Date format string │
+│ TIME_FORMAT        │ "h:mm a"        │ Time format string │
+│ TIMEZONE           │ (unset)         │ IANA timezone      │
+└────────────────────┴─────────────────┴────────────────────┘
+```
+
+**Rationale:**
+- Helps operators verify configuration at a glance
+- Shows what's unset vs set
+- Documents expected values for each variable
+- Useful for debugging configuration issues
+
+**Implementation notes:**
+- Server-side: read from `env` object
+- Mask sensitive values: show `******** (set)` for tokens/secrets
+- Show `(unset)` for undefined variables
+- Include description column (optional): what each var controls
+- Link to CONFIGURATION.md for detailed documentation
+- Consider showing env vars in categories:
+  - Identity & Branding
+  - Access Control
+  - Retention & Limits
+  - Display & Formatting
+
+**Security considerations:**
+- **NEVER** show actual values of `ADMIN_TOKEN`, `SUBMIT_TOKEN`, or `TOTP_SECRET`
+- Only show masked indicators: `******** (set)` or `(unset)`
+- Ensure this page is admin-protected
+
+**Additional features:**
+- Color code: green for set, yellow for unset-but-optional, red for unset-and-recommended
+- Show defaults when unset: `(unset, default: 1month)`
+- Add "Edit" button that links to Cloudflare dashboard settings page
+- Validation status: show warning if value looks invalid
+
+**Example implementation:**
+```javascript
+const ENV_VARS = [
+  { name: 'INSTANCE_NAME', sensitive: false, default: 'Textpile', type: 'string' },
+  { name: 'ADMIN_TOKEN', sensitive: true, default: null, type: 'secret' },
+  { name: 'DEFAULT_RETENTION', sensitive: false, default: '1month',
+    options: ['1week', '1month', '3months', '6months', '1year'] },
+  // ...
+];
+
+function getEnvValue(name, sensitive) {
+  const value = env[name];
+  if (sensitive && value) return '******** (set)';
+  if (!value) return '(unset)';
+  return value;
+}
+```
+
+---
+
+## Public Admin Page (When ADMIN_TOKEN Unset)
+
+**Status:** Proposed
+
+Make the `/admin` page publicly accessible when `ADMIN_TOKEN` environment variable is unset.
+
+**Current behavior:**
+- Admin page requires `ADMIN_TOKEN` to be configured
+- If unset, admin page returns error or is inaccessible
+- No way to access admin features without setting token
+
+**Proposed behavior:**
+- If `ADMIN_TOKEN` is **set**: Require token for access (current behavior)
+- If `ADMIN_TOKEN` is **unset**: Allow public access to admin page
+
+**Rationale:**
+- Single-person instances don't need admin authentication
+- Testing and development environments benefit from easier access
+- Some communities operate on trust and don't need access control
+- Follows convention of "no token = public access"
+
+**Use cases:**
+- Personal Textpile instance on local network
+- Development and testing
+- Small trusted communities
+- Read-only admin page for transparency
+
+**Security warning:**
+When admin page is public (ADMIN_TOKEN unset), add prominent warning banner:
+
+```
+⚠️ Warning: Admin page is publicly accessible
+ADMIN_TOKEN is not set. Anyone can access this page and
+perform admin operations (delete posts, export data, etc.).
+
+To secure this page, set the ADMIN_TOKEN environment variable.
+```
+
+**Implementation notes:**
+```javascript
+export async function onRequestGet({ request, env }) {
+  const adminToken = env.ADMIN_TOKEN;
+
+  // If ADMIN_TOKEN is unset, allow public access
+  if (!adminToken) {
+    return renderAdminPage(env, {
+      warning: 'Admin page is publicly accessible'
+    });
+  }
+
+  // If ADMIN_TOKEN is set, require authentication
+  const providedToken = getCookie(request, 'admin_token');
+  if (!providedToken || !await timingSafeEqual(providedToken, adminToken)) {
+    return Response.redirect('/admin/login');
+  }
+
+  return renderAdminPage(env);
+}
+```
+
+**Security considerations:**
+- Make the warning banner very prominent (red background, icon)
+- Consider logging access to public admin page
+- Admin operations (delete, pin, etc.) should still require confirmation
+- Document this behavior clearly in CONFIGURATION.md
+
+**Related configuration:**
+Could extend this to other features:
+```
+SUBMIT_TOKEN (unset)  → Public posting
+ADMIN_TOKEN (unset)   → Public admin access
+FLAG_ENABLED=false    → No community flagging
+```
+
+**Alternative approach:**
+Add explicit config option:
+```
+ADMIN_ACCESS=public   # Options: public, private (requires token)
+```
+But this adds complexity - the current approach (token presence) is simpler.
+
+---
+
 ## Notes
 
 - Items are listed in rough order of proposal, not priority
