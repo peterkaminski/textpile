@@ -66,7 +66,7 @@ Navigate to **Settings** → **Environment variables**
 To require a shared token for submissions:
 
 1. Click **Add variable**
-2. **Variable name**: `SUBMIT_TOKEN`
+2. **Variable name**: `ADD_POST_PASSWORD`
 3. **Value**: A secret string (e.g., generate with `openssl rand -hex 32`)
 4. **Environment**: Production (and Preview if desired)
 5. Click **Save**
@@ -187,7 +187,7 @@ Control maximum post and total storage sizes:
 1. Wait for the deployment to complete (usually < 1 minute)
 2. Visit your Pages URL (e.g., `textpile.pages.dev`)
 3. You should see the Textpile home page
-4. Try submitting a test post via `/submit`
+4. Try adding a test post via `/add`
 5. Verify it appears on the home page and can be viewed
 
 ## Local Development (Optional)
@@ -219,7 +219,7 @@ This starts a local server (usually at `http://localhost:8788`) with KV bindings
 Create a `.dev.vars` file (automatically gitignored):
 
 ```
-SUBMIT_TOKEN=your-test-token
+ADD_POST_PASSWORD=your-test-token
 ADMIN_TOKEN=your-admin-token
 ```
 
@@ -267,9 +267,9 @@ Cloudflare Pages provides built-in analytics:
 - Ensure namespace is bound in Settings → Functions
 - Redeploy after adding the binding (see above)
 
-### Submit token not working
+### Add post password not working
 
-- Check that `SUBMIT_TOKEN` is set in environment variables
+- Check that `ADD_POST_PASSWORD` is set in environment variables
 - Verify you're using Production environment variables
 - Redeploy after adding variables
 
@@ -310,7 +310,7 @@ To completely remove Textpile:
 ## Security Considerations
 
 - **Never commit** `.dev.vars` or actual tokens to git
-- Use strong random values for `SUBMIT_TOKEN` and `ADMIN_TOKEN`
+- Use strong random values for `ADD_POST_PASSWORD` and `ADMIN_TOKEN`
 - Consider enabling Cloudflare Access for additional protection
 - Monitor Functions logs for suspicious activity
 - Set up rate limiting if spam becomes an issue (Cloudflare dashboard)

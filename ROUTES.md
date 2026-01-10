@@ -33,7 +33,7 @@ These are served directly from the `/public` directory:
 #### **POST `/api/add`**
 - **File**: `functions/api/add.js`
 - **Purpose**: Add a new post
-- **Authentication**: Optional SUBMIT_TOKEN (if configured)
+- **Authentication**: Optional ADD_POST_PASSWORD (if configured)
 - **Request Body**:
   ```json
   {
@@ -206,7 +206,7 @@ All admin routes require authentication via `Authorization: Bearer <ADMIN_TOKEN>
 
 ## Authentication Methods
 
-### SUBMIT_TOKEN (Optional - "Add Post Password")
+### ADD_POST_PASSWORD ("Add Post Password")
 - Used for `/api/add` endpoint
 - If configured, required to add new posts
 - Provided in request body as `token` field

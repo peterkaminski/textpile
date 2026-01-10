@@ -25,12 +25,14 @@ This release renames all "submit" terminology to "add" for clarity and consisten
 - Old routes `/submit` and `/api/submit` no longer exist (404)
 - No redirects or aliases provided
 - Update any bookmarks, scripts, or documentation that reference old routes
-- Environment variable `SUBMIT_TOKEN` unchanged (only UI terminology updated)
+- Environment variable renamed: `SUBMIT_TOKEN` → `ADD_POST_PASSWORD`
 
 **Migration:**
+- Rename environment variable: `SUBMIT_TOKEN` → `ADD_POST_PASSWORD` in Cloudflare Pages settings
 - Update any external scripts or tools to use `/api/add` instead of `/api/submit`
 - Share updated `/add` URL with users
 - Update any custom documentation or instructions
+- Redeploy after renaming environment variable
 
 ## [0.6.0] - 2026-01-08
 
@@ -653,7 +655,7 @@ If you don't have these variables set, Textpile will use ISO 8601 format automat
 - **Timing-safe token comparison** (security enhancement)
   - Implemented in `functions/api/submit.js` and `functions/api/remove.js`
   - Uses `crypto.subtle` when available with XOR fallback
-  - Prevents timing attacks on SUBMIT_TOKEN and ADMIN_TOKEN
+  - Prevents timing attacks on ADD_POST_PASSWORD and ADMIN_TOKEN
 - **Client-side form validation**
   - Body field validated before submission
   - Immediate user feedback
@@ -717,7 +719,7 @@ If you don't have these variables set, Textpile will use ISO 8601 format automat
 - **Features**:
   - Non-attributed posting (no author identity stored)
   - Instant publishing with sortable IDs
-  - Optional SUBMIT_TOKEN for spam prevention
+  - Optional ADD_POST_PASSWORD for spam prevention
   - Optional ADMIN_TOKEN for quick takedown
   - Index capped at 1000 posts
   - HTML escaping for security

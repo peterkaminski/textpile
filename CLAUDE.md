@@ -24,7 +24,7 @@ public/
 functions/
   api/
     index.js      # GET /api/index - returns TOC JSON
-    submit.js     # POST /api/submit - publish new post
+    add.js        # POST /api/add - publish new post
     remove.js     # POST /api/remove - admin takedown
   p/
     [id].js       # GET /p/:id - render individual post
@@ -60,12 +60,12 @@ functions/
 
 Configure via Cloudflare Pages Settings → Variables and Secrets:
 
-- `SUBMIT_TOKEN` (optional) - Shared token to gate submissions (anti-spam)
+- `ADD_POST_PASSWORD` (optional) - Shared password to gate adding posts (anti-spam)
 - `ADMIN_TOKEN` (optional) - Required for `/api/remove` endpoint
 
 **Behavior**:
-- If `SUBMIT_TOKEN` is unset, submissions are open to all
-- If set, users must provide it in the submit form
+- If `ADD_POST_PASSWORD` is unset, adding posts is open to all
+- If set, users must provide it in the add post form
 - `ADMIN_TOKEN` enables quick takedown via API
 
 ## Expiration & Retention Philosophy
@@ -114,7 +114,7 @@ wrangler pages dev public/ --kv=KV
    - Variable name: `KV`
    - Select your namespace
 5. **Configure Environment Variables** (optional):
-   - `SUBMIT_TOKEN` for submission gating
+   - `ADD_POST_PASSWORD` for add post gating
    - `ADMIN_TOKEN` for admin removal
 
 ## Client-Side Rendering
@@ -128,14 +128,14 @@ wrangler pages dev public/ --kv=KV
 - No authentication or user identity is collected or stored
 - HTML escaping required in all user-generated content displays
 - Admin takedown requires `ADMIN_TOKEN` in request body
-- Optional `SUBMIT_TOKEN` prevents open spam submissions
+- Optional `ADD_POST_PASSWORD` prevents open spam posts
 - Timing-safe token comparison prevents timing attacks on tokens
 
 ## Known Limitations
 
 ### Race Condition in Index Updates
 
-The index update operation in `functions/api/submit.js` follows a read-modify-write pattern that is susceptible to race conditions if multiple posts are submitted simultaneously. This is documented in the code and is an acceptable trade-off for low-traffic sites:
+The index update operation in `functions/api/add.js` follows a read-modify-write pattern that is susceptible to race conditions if multiple posts are added simultaneously. This is documented in the code and is an acceptable trade-off for low-traffic sites:
 
 ```javascript
 // Read

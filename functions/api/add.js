@@ -53,8 +53,8 @@ export async function onRequestPost({ request, env }) {
     return Response.json({ error: "Expected JSON body." }, { status: 400 });
   }
 
-  // Optional shared token gate: if SUBMIT_TOKEN is set, require it.
-  const required = env.SUBMIT_TOKEN;
+  // Optional shared token gate: if ADD_POST_PASSWORD is set, require it.
+  const required = env.ADD_POST_PASSWORD;
   if (required) {
     const token = (data?.token ? String(data.token) : "").trim();
     if (!token || !(await timingSafeEqual(token, required))) {

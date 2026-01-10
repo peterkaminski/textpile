@@ -149,7 +149,7 @@ You'll only pay if:
 **To stay free:**
 - Use shorter retention periods (more auto-deletion)
 - Limit posts per user if needed
-- Use a submit token to prevent spam
+- Use an add post password to prevent spam
 
 ### Hidden Costs (Your Time)
 
@@ -182,7 +182,7 @@ The real cost is your attention:
 - Community frustrated
 
 **Prevention**:
-- Require a shared submit token (share with trusted users only)
+- Require a shared add post password (share with trusted users only)
 - Enable Cloudflare rate limiting (10 posts/minute max)
 - Use Cloudflare Access for authentication
 
@@ -366,7 +366,7 @@ The real cost is your attention:
 
 **When you start:**
 - Announce Textpile availability
-- Share submit token (if using)
+- Share add post password (if using)
 - Explain retention periods
 
 **Ongoing:**
@@ -377,7 +377,7 @@ The real cost is your attention:
 ### 3. Protect Yourself
 
 **Technical:**
-- Use submit token to prevent spam
+- Use add post password to prevent spam
 - Enable rate limiting
 - Use Cloudflare Access for closed groups
 - Keep ADMIN_TOKEN secret

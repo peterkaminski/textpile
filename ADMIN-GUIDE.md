@@ -114,7 +114,7 @@ The simplest anti-spam measure is requiring a shared submit token.
 1. Go to Cloudflare Pages → Your Project → Settings → Environment variables
 2. Click **Add variable**
 3. Set:
-   - Variable name: `SUBMIT_TOKEN`
+   - Variable name: `ADD_POST_PASSWORD`
    - Value: A strong random string (e.g., `openssl rand -hex 32`)
    - Environment: Production
 4. Click **Save**
@@ -162,7 +162,7 @@ Cloudflare Access adds authentication in front of your entire site or specific p
 - Application name: `Textpile Submit`
 - Session duration: `24 hours` (or as needed)
 - Application domain: `your-textpile.pages.dev` (or custom domain)
-- Path: `/submit`
+- Path: `/add`
 
 **Step 3: Create Access Policy**
 
@@ -186,7 +186,7 @@ Choose one of these authentication methods:
 **Step 4: Apply and Test**
 
 1. Click **Save application**
-2. Visit `/submit` in an incognito window
+2. Visit `/add` in an incognito window
 3. You should see Cloudflare Access login page
 4. Authenticate to confirm it works
 
@@ -206,8 +206,8 @@ Restrict access to specific IP ranges:
 
 1. Cloudflare Dashboard → **Security** → **WAF**
 2. Create a **Custom Rule**:
-   - Name: `Textpile Submit Allowlist`
-   - Expression: `(http.request.uri.path contains "/api/submit") and (not ip.src in {1.2.3.4 5.6.7.8})`
+   - Name: `Textpile Add Post Allowlist`
+   - Expression: `(http.request.uri.path contains "/api/add") and (not ip.src in {1.2.3.4 5.6.7.8})`
    - Action: `Block`
 
 This blocks all submit requests except from specified IPs.
@@ -233,7 +233,7 @@ Prevent abuse by limiting submission frequency.
 - Rule name: `Textpile Submit Rate Limit`
 - If incoming requests match:
   ```
-  (http.request.uri.path eq "/api/submit" and http.request.method eq "POST")
+  (http.request.uri.path eq "/api/add" and http.request.method eq "POST")
   ```
 - Then:
   - Choose action: `Block`
@@ -258,7 +258,7 @@ This allows max 10 posts per minute per IP. Adjust as needed for your community 
 For finer control, implement rate limiting in the submit function using KV:
 
 ```javascript
-// In functions/api/submit.js
+// In functions/api/add.js
 const ipKey = `ratelimit:${request.headers.get('CF-Connecting-IP')}`;
 const count = await env.KV.get(ipKey);
 
@@ -278,13 +278,12 @@ await env.KV.put(ipKey, String((parseInt(count) || 0) + 1), { expirationTtl: 60 
 **Method 1: Remove Submit Token** (if using)
 
 1. Cloudflare Pages → Settings → Environment variables
-2. Delete the `SUBMIT_TOKEN` variable
+2. Delete the `ADD_POST_PASSWORD` variable
 3. Redeploy
-4. Result: All submissions fail with "Submit token required"
-
+43. Result: All submissions fail with "Add post password required"
 **Method 2: Set Invalid Token**
 
-1. Set `SUBMIT_TOKEN` to a known impossible value (e.g., `DISABLED`)
+1. Set `ADD_POST_PASSWORD` to a known impossible value (e.g., `DISABLED`)
 2. Don't share this value
 3. Result: All submissions blocked
 
@@ -292,8 +291,8 @@ await env.KV.put(ipKey, String((parseInt(count) || 0) + 1), { expirationTtl: 60 
 
 1. Cloudflare Dashboard → Security → WAF → Custom Rules
 2. Create rule:
-   - Name: `Block Submit`
-   - Expression: `(http.request.uri.path eq "/api/submit")`
+   - Name: `Block Add Post`
+   - Expression: `(http.request.uri.path eq "/api/add")`
    - Action: `Block`
 3. Result: Immediate 403 Forbidden for all submissions
 
@@ -386,7 +385,7 @@ wrangler kv:key list --binding=KV | jq '. | length'
 
 **Cloudflare Analytics:**
 1. Pages project → Analytics
-2. View requests to `/api/submit`
+2. View requests to `/api/add`
 3. Check error rates
 
 **Real-time Logs:**
@@ -403,7 +402,7 @@ Shows live function invocations, errors, and console.log output.
 1. **Post Content**: Cloudflare KV automatically deletes posts when they expire (via TTL)
 2. **Index Cleanup**: Expired entries are automatically removed from the index during:
    - Homepage loads (`/api/index`)
-   - New post submissions (`/api/submit`)
+   - New post submissions (`/api/add`)
    - Post deletions (`/api/remove`)
    - Pin/unpin operations (`/api/admin/pin`)
 
@@ -499,7 +498,7 @@ wrangler kv:key list --binding=KV | jq '[.[].metadata.size] | add'
 
 **At 95% Capacity (Critical):**
 - **Immediate actions:**
-  1. Disable new submissions (remove or change SUBMIT_TOKEN)
+  1. Disable new submissions (remove or change ADD_POST_PASSWORD)
   2. Export all posts via admin interface
   3. Manually delete old or large posts
   4. Reduce retention windows for new posts
@@ -632,7 +631,7 @@ You can extend the RSS channel with additional fields like `<managingEditor>`, `
 **DO:**
 - ✅ Use long random tokens (`openssl rand -hex 32`)
 - ✅ Store tokens in Cloudflare environment variables (encrypted at rest)
-- ✅ Use different tokens for `SUBMIT_TOKEN` and `ADMIN_TOKEN`
+- ✅ Use different tokens for `ADD_POST_PASSWORD` and `ADMIN_TOKEN`
 - ✅ Rotate tokens periodically (every 3-6 months)
 - ✅ Share tokens via secure channels (Signal, encrypted email)
 
@@ -674,7 +673,7 @@ Set up alerts for:
 - [ ] Test admin removal endpoint
 
 **Quarterly:**
-- [ ] Rotate `SUBMIT_TOKEN` and `ADMIN_TOKEN`
+- [ ] Rotate `ADD_POST_PASSWORD` and `ADMIN_TOKEN`
 - [ ] Review Cloudflare Access policies (if using)
 - [ ] Check for Textpile updates
 - [ ] Verify backups of important posts (user responsibility, but remind them)

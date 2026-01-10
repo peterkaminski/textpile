@@ -92,7 +92,7 @@ ADMIN_EMAIL=admin@example.com
 
 ## Access Control
 
-### SUBMIT_TOKEN
+### ADD_POST_PASSWORD
 
 **Purpose**: Require a shared secret password for adding posts (anti-spam, referred to as "add post password" in the UI)
 
@@ -110,7 +110,7 @@ openssl rand -hex 32
 **Set in**: Cloudflare Pages → Settings → Environment variables → Production
 
 ```
-SUBMIT_TOKEN=your-long-random-string-here
+ADD_POST_PASSWORD=your-long-random-string-here
 ```
 
 **Usage**: Users enter token in submit form (optional field becomes required)
@@ -134,7 +134,7 @@ SUBMIT_TOKEN=your-long-random-string-here
 - Enables `/admin` web interface
 - Enables `/api/remove` and other admin endpoints
 
-**Recommended Value**: Use a strong random string (different from SUBMIT_TOKEN)
+**Recommended Value**: Use a strong random string (different from ADD_POST_PASSWORD)
 ```bash
 openssl rand -hex 32
 ```
@@ -155,7 +155,7 @@ ADMIN_TOKEN=your-different-long-random-string
 
 **Security**:
 - NEVER commit this token to git
-- Use a different value from SUBMIT_TOKEN
+- Use a different value from ADD_POST_PASSWORD
 - Timing-safe comparison prevents guessing attacks
 - Token stored in browser localStorage after first login
 
@@ -456,7 +456,7 @@ MAX_KV_SIZE=1048576000
 | `INSTANCE_NAME` | `"Textpile"` | Name of this instance | No |
 | `COMMUNITY_NAME` | `"the community"` | Community description | No |
 | `ADMIN_EMAIL` | `null` | Contact email in footer | No |
-| `SUBMIT_TOKEN` | Not set | Anti-spam token | No |
+| `ADD_POST_PASSWORD` | Not set | Anti-spam password | No |
 | `ADMIN_TOKEN` | Not set | Admin access token | No |
 | `DEFAULT_RETENTION` | `"1month"` | Default retention period | No |
 | `DATE_FORMAT` | `"medium"` | Date display format | No |
@@ -476,10 +476,10 @@ MAX_KV_SIZE=1048576000
 
 2. **Use strong random tokens**
    - Generate with `openssl rand -hex 32`
-   - Use different tokens for SUBMIT_TOKEN and ADMIN_TOKEN
+   - Use different tokens for ADD_POST_PASSWORD and ADMIN_TOKEN
 
 3. **Limit token exposure**
-   - Share SUBMIT_TOKEN only with community members
+   - Share ADD_POST_PASSWORD only with community members
    - Keep ADMIN_TOKEN completely private
    - Rotate tokens if compromised
 
@@ -548,7 +548,7 @@ Create a `.dev.vars` file in your project root (automatically gitignored):
 ```
 INSTANCE_NAME=My Local Textpile
 COMMUNITY_NAME=test community
-SUBMIT_TOKEN=test-token-123
+ADD_POST_PASSWORD=test-token-123
 ADMIN_TOKEN=admin-token-456
 DEFAULT_RETENTION=1week
 DATE_FORMAT=short
@@ -580,7 +580,7 @@ wrangler pages dev public/
 
 ### Token not working
 
-**Problem**: SUBMIT_TOKEN or ADMIN_TOKEN rejected
+**Problem**: ADD_POST_PASSWORD or ADMIN_TOKEN rejected
 
 **Causes**:
 - Variable not set in Production environment

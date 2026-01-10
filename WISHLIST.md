@@ -240,7 +240,7 @@ FLAG_WINDOW_HOURS=24      # Time window for collecting flags
 - Consider requiring simple CAPTCHA for flagging
 - Log all flag actions for admin review
 - Admin interface to see flagged posts and flag history
-- **Require SUBMIT_TOKEN if set:** If `SUBMIT_TOKEN` environment variable is configured, flagging must also require the submit token (prevents open flagging on gated instances)
+- **Require ADD_POST_PASSWORD if set:** If `ADD_POST_PASSWORD` environment variable is configured, flagging must also require the add post password (prevents open flagging on gated instances)
 
 **Privacy considerations:**
 - Store only hashed IP addresses, not full IPs
@@ -340,11 +340,11 @@ if (postMonth === selectedMonth) {
 
 **Status:** Proposed
 
-Support Time-based One-Time Password (TOTP) as an alternative or supplement to the static `SUBMIT_TOKEN`.
+Support Time-based One-Time Password (TOTP) as an alternative or supplement to the static `ADD_POST_PASSWORD`.
 
 **Configuration (environment variables):**
 ```
-SUBMIT_TOKEN_TYPE=totp       # Options: static, totp, both
+ADD_POST_PASSWORD_TYPE=totp       # Options: static, totp, both
 TOTP_SECRET=BASE32SECRET     # Base32-encoded TOTP secret
 TOTP_WINDOW=1                # Accept codes ±N windows (30s each)
 ```
@@ -371,8 +371,8 @@ TOTP_WINDOW=1                # Accept codes ±N windows (30s each)
 
 **Alternative: Hybrid mode**
 ```
-SUBMIT_TOKEN_TYPE=both
-SUBMIT_TOKEN=static-password
+ADD_POST_PASSWORD_TYPE=both
+ADD_POST_PASSWORD=static-password
 TOTP_SECRET=BASE32SECRET
 ```
 Accept either static token OR valid TOTP code.
@@ -408,7 +408,7 @@ Add a section to the admin page showing all possible environment variables and t
 │ COMMUNITY_NAME     │ "Our Community" │ Any string         │
 │ ADMIN_EMAIL        │ admin@example   │ Email address      │
 │ ADMIN_TOKEN        │ ******** (set)  │ Random string      │
-│ SUBMIT_TOKEN       │ (unset)         │ Random string      │
+│ ADD_POST_PASSWORD  │ (unset)         │ Random string      │
 │ DEFAULT_RETENTION  │ 1month          │ 1week, 1month,     │
 │                    │                 │ 3months, 6months,  │
 │                    │                 │ 1year              │
@@ -438,7 +438,7 @@ Add a section to the admin page showing all possible environment variables and t
   - Display & Formatting
 
 **Security considerations:**
-- **NEVER** show actual values of `ADMIN_TOKEN`, `SUBMIT_TOKEN`, or `TOTP_SECRET`
+- **NEVER** show actual values of `ADMIN_TOKEN`, `ADD_POST_PASSWORD`, or `TOTP_SECRET`
 - Only show masked indicators: `******** (set)` or `(unset)`
 - Ensure this page is admin-protected
 
@@ -537,7 +537,7 @@ export async function onRequestGet({ request, env }) {
 **Related configuration:**
 Could extend this to other features:
 ```
-SUBMIT_TOKEN (unset)  → Public posting
+ADD_POST_PASSWORD (unset)  → Public posting
 ADMIN_TOKEN (unset)   → Public admin access
 FLAG_ENABLED=false    → No community flagging
 ```

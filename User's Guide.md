@@ -135,12 +135,12 @@ Textpile provides an RSS 2.0 feed for following new posts in your feed reader.
 
 ### Optional Add Post Password
 
-If `SUBMIT_TOKEN` is configured as an environment variable (referred to as "add post password" in the UI):
+If `ADD_POST_PASSWORD` is configured as an environment variable:
 - Users must provide the password when adding posts
 - Share the password privately with your community
 - Prevents open spam posts
 
-If `SUBMIT_TOKEN` is not set:
+If `ADD_POST_PASSWORD` is not set:
 - Anyone can add posts
 - Useful for fully open communities or internal networks
 
@@ -219,7 +219,7 @@ Administrators can pin important posts to keep them at the top of the homepage:
 
 **For maintainers:**
 - Set clear expectations about retention
-- Use `SUBMIT_TOKEN` (add post password) if spam becomes an issue
+- Use `ADD_POST_PASSWORD` (add post password) if spam becomes an issue
 - Don't hesitate to shut down if overhead grows
 
 ### What Textpile Is Not
