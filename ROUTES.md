@@ -14,7 +14,7 @@ These are served directly from the `/public` directory:
 
 - **`/` (index.html)** - Homepage displaying the list of recent posts
 - **`/about` (about.html)** - About page with information about the Textpile instance
-- **`/submit` (submit.html)** - Form for submitting new posts
+- **`/add` (add.html)** - Form for adding new posts
 - **`/admin` (admin.html)** - Admin dashboard for managing posts (requires ADMIN_TOKEN)
 - **`/test-date-formatter` (test-date-formatter.html)** - Testing page for date formatting utilities
 
@@ -30,14 +30,14 @@ These are served directly from the `/public` directory:
   - Sorts pinned posts first, then by creation date (newest first)
   - Cleans up expired entries from the index
 
-#### **POST `/api/submit`**
-- **File**: `functions/api/submit.js`
-- **Purpose**: Submit a new post
+#### **POST `/api/add`**
+- **File**: `functions/api/add.js`
+- **Purpose**: Add a new post
 - **Authentication**: Optional SUBMIT_TOKEN (if configured)
 - **Request Body**:
   ```json
   {
-    "token": "optional_submit_token",
+    "token": "optional_add_post_password",
     "title": "Post title (max 140 chars)",
     "body": "Post content (required)",
     "expiry": "1week|1month|3months|6months|1year",
@@ -187,10 +187,10 @@ All admin routes require authentication via `Authorization: Bearer <ADMIN_TOKEN>
 |-------|--------|------|---------------|---------|
 | `/` | GET | Static | No | Homepage |
 | `/about` | GET | Static | No | About page |
-| `/submit` | GET | Static | No | Submit form |
+| `/add` | GET | Static | No | Add post form |
 | `/admin` | GET | Static | Yes (client-side) | Admin dashboard |
 | `/api` | GET | API | No | Get post index |
-| `/api/submit` | POST | API | Optional | Submit new post |
+| `/api/add` | POST | API | Optional | Add new post |
 | `/api/remove` | POST | API | Yes | Remove a post |
 | `/api/config` | GET | API | No | Get public config |
 | `/api/admin/posts` | GET | API | Yes | List all posts |
@@ -206,9 +206,9 @@ All admin routes require authentication via `Authorization: Bearer <ADMIN_TOKEN>
 
 ## Authentication Methods
 
-### SUBMIT_TOKEN (Optional)
-- Used for `/api/submit` endpoint
-- If configured, required to submit new posts
+### SUBMIT_TOKEN (Optional - "Add Post Password")
+- Used for `/api/add` endpoint
+- If configured, required to add new posts
 - Provided in request body as `token` field
 - Uses timing-safe comparison to prevent timing attacks
 

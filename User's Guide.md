@@ -1,14 +1,14 @@
 # Textpile User's Guide
 
-## For Authors: Submitting Content
+## For Authors: Adding Content
 
-### How to Submit a Post
+### How to Add a Post
 
 1. Click the "Add Post" link on the homepage
 2. Enter an optional title (max 140 characters)
 3. Paste your content in Markdown or plain text (max 1 MB by default)
 4. Select a retention period (how long before the post expires)
-5. If required, enter the shared submit token
+5. If required, enter the shared add post password
 6. Click "Publish"
 7. You'll be redirected to your published post
 
@@ -17,7 +17,7 @@
 **Textpile does not retain your content permanently:**
 - Posts expire automatically based on retention settings
 - Maintainers do not back up content
-- **Keep your own copy** of everything you submit
+- **Keep your own copy** of everything you add
 - Save the Textpile URL along with your local copy
 
 **No attribution is stored:**
@@ -87,7 +87,7 @@ Individual posts (`/p/:id`) display:
 - Full Markdown-rendered content
 - **View toggle button**: Switch between formatted Markdown and plain text
 - **Copy text button**: Copy the raw Markdown to your clipboard
-- Navigation links: "Add Post" to submit new content, "Home" to return to homepage
+- Navigation links: "Add Post" to add new content, "Home" to return to homepage
 
 **Post View Features:**
 
@@ -133,15 +133,15 @@ Textpile provides an RSS 2.0 feed for following new posts in your feed reader.
 
 ## For Administrators
 
-### Optional Submit Token
+### Optional Add Post Password
 
-If `SUBMIT_TOKEN` is configured as an environment variable:
-- Users must provide the token when submitting
-- Share the token privately with your community
-- Prevents open spam submissions
+If `SUBMIT_TOKEN` is configured as an environment variable (referred to as "add post password" in the UI):
+- Users must provide the password when adding posts
+- Share the password privately with your community
+- Prevents open spam posts
 
 If `SUBMIT_TOKEN` is not set:
-- Anyone can submit posts
+- Anyone can add posts
 - Useful for fully open communities or internal networks
 
 ### Admin Interface
@@ -213,13 +213,13 @@ Administrators can pin important posts to keep them at the top of the homepage:
 ### Recommended Practices
 
 **For users:**
-- Keep your own archive of submitted content
+- Keep your own archive of added content
 - Include title + version in your documents
 - Add Textpile URLs back to your own records
 
 **For maintainers:**
 - Set clear expectations about retention
-- Use `SUBMIT_TOKEN` if spam becomes an issue
+- Use `SUBMIT_TOKEN` (add post password) if spam becomes an issue
 - Don't hesitate to shut down if overhead grows
 
 ### What Textpile Is Not

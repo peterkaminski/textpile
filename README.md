@@ -10,8 +10,8 @@ Textpile is a temporary reading surface for communities - not an archive. It's d
 - **Non-attributed posting**: No author identity collected or stored
 - **Auto-expiring content**: Posts expire automatically based on user-selected retention windows (1 week to 1 year)
 - **Zero maintenance**: No databases, no builds, no cron jobs, no manual review
-- **Instant publishing**: Submit Markdown or plain text, get a URL immediately
-- **Optional access control**: Optional shared submit token to prevent spam
+- **Instant publishing**: Add Markdown or plain text posts, get a URL immediately
+- **Optional access control**: Optional shared add post password to prevent spam
 - **Admin interface**: Web-based admin panel for post management, export/import, and storage monitoring
 - **RSS feed**: RSS 2.0 feed for following posts in your feed reader
 - **Pin posts**: Highlight important posts at the top of the homepage
@@ -29,14 +29,14 @@ This design choice dramatically lowers operational burden and makes clear that i
 
 **Public Pages:**
 - `GET /` - Homepage with table of contents (latest posts)
-- `GET /submit` - Submission form
+- `GET /add` - Add post form
 - `GET /p/:id` - Individual post view
 - `GET /admin` - Admin interface (requires ADMIN_TOKEN)
 
 **API Endpoints:**
 - `GET /api/index` - JSON API for TOC
 - `GET /api/config` - Public configuration (community name, formats, defaults)
-- `POST /api/submit` - Publish endpoint
+- `POST /api/add` - Publish endpoint
 - `POST /api/remove` - Admin removal endpoint (requires ADMIN_TOKEN)
 - `GET /api/admin/posts` - List all posts (requires ADMIN_TOKEN)
 - `GET /api/admin/export` - Export posts as JSONL (requires ADMIN_TOKEN)
@@ -58,7 +58,7 @@ This design choice dramatically lowers operational burden and makes clear that i
 
 ### Getting Started
 - **[INSTALLATION.md](INSTALLATION.md)** - Step-by-step deployment guide for Cloudflare Pages
-- **[User's Guide.md](User's%20Guide.md)** - How to submit, read, and manage posts
+- **[User's Guide.md](User's%20Guide.md)** - How to add, read, and manage posts
 
 ### Understanding Textpile
 - **[ARCHITECTURE.md](ARCHITECTURE.md)** - Plain-language explanation of how Textpile works, costs, implications, and what you're signing up for (recommended for all users and operators)

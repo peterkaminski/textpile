@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Submit · Textpile</title>
+    <title>Add Post · Textpile</title>
     <link rel="stylesheet" href="/style.css" />
   </head>
   <body>
@@ -59,11 +59,11 @@
       <hr />
 
       <details>
-        <summary class="small">Optional: shared submit token</summary>
+        <summary class="small">Optional: add post password</summary>
         <p class="small">
-          If the site owner has enabled a submit token, paste it here. Otherwise leave blank.
+          If the site owner has enabled an add post password, paste it here. Otherwise leave blank.
         </p>
-        <input id="token" name="token" placeholder="submit token (if required)" />
+        <input id="token" name="token" placeholder="add post password (if required)" />
       </details>
     </form>
 
@@ -132,7 +132,7 @@
         }
 
         try {
-          const res = await fetch("/api/submit", {
+          const res = await fetch("/api/add", {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({
@@ -145,7 +145,7 @@
 
           const data = await res.json().catch(() => ({}));
           if (!res.ok) {
-            throw new Error(data?.error || `Submit failed: ${res.status}`);
+            throw new Error(data?.error || `Add failed: ${res.status}`);
           }
 
           msg.textContent = "Published. Redirecting…";

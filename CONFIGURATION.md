@@ -94,13 +94,13 @@ ADMIN_EMAIL=admin@example.com
 
 ### SUBMIT_TOKEN
 
-**Purpose**: Require a shared secret token for submissions (anti-spam)
+**Purpose**: Require a shared secret password for adding posts (anti-spam, referred to as "add post password" in the UI)
 
-**Default**: Not set (submissions are open)
+**Default**: Not set (adding posts is open)
 
 **Behavior**:
-- If set: Users must provide this token when submitting posts
-- If not set: Anyone can submit posts
+- If set: Users must provide this password when adding posts
+- If not set: Anyone can add posts
 
 **Recommended Value**: Use a strong random string
 ```bash
@@ -185,9 +185,9 @@ DEFAULT_RETENTION=1month
 ```
 
 **Behavior**:
-- Pre-selects this option in the retention dropdown on `/submit`
+- Pre-selects this option in the retention dropdown on `/add`
 - Users can still choose any retention period
-- Does not affect already-submitted posts
+- Does not affect already-added posts
 
 **Recommendation**: Choose based on your community's needs and storage constraints
 

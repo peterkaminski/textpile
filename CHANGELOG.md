@@ -7,6 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### ⚠️ BREAKING CHANGES
+
+**Route Rename: Submit → Add**
+
+This release renames all "submit" terminology to "add" for clarity and consistency.
+
+**Changed routes:**
+- `/submit` → `/add` (user-facing page)
+- `POST /api/submit` → `POST /api/add` (API endpoint)
+
+**Changed terminology:**
+- "submit token" → "add post password" (UI text)
+- "Submit" button/concept → "Add Post" / "Publish"
+
+**Impact:**
+- Old routes `/submit` and `/api/submit` no longer exist (404)
+- No redirects or aliases provided
+- Update any bookmarks, scripts, or documentation that reference old routes
+- Environment variable `SUBMIT_TOKEN` unchanged (only UI terminology updated)
+
+**Migration:**
+- Update any external scripts or tools to use `/api/add` instead of `/api/submit`
+- Share updated `/add` URL with users
+- Update any custom documentation or instructions
+
 ## [0.6.0] - 2026-01-08
 
 ### ⚠️ BREAKING CHANGES

@@ -43,7 +43,7 @@ export async function onRequestGet({ params, env }) {
       <span class="separator" aria-hidden="true">&middot;</span>
       <a href="/about">About</a>
       <span class="separator" aria-hidden="true">&middot;</span>
-      <a href="/submit">Add Post</a>
+      <a href="/add">Add Post</a>
     </div>
   </header>
 
@@ -91,7 +91,7 @@ export async function onRequestGet({ params, env }) {
       <span class="separator" aria-hidden="true">&middot;</span>
       <a href="/about">About</a>
       <span class="separator" aria-hidden="true">&middot;</span>
-      <a href="/submit">Add Post</a>
+      <a href="/add">Add Post</a>
     </div>
   </header>
 

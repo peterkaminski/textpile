@@ -58,7 +58,7 @@ export async function onRequestPost({ request, env }) {
   if (required) {
     const token = (data?.token ? String(data.token) : "").trim();
     if (!token || !(await timingSafeEqual(token, required))) {
-      return Response.json({ error: "Submit token required or invalid." }, { status: 403 });
+      return Response.json({ error: "Add post password required or invalid." }, { status: 403 });
     }
   }
 
@@ -129,7 +129,7 @@ export async function onRequestPost({ request, env }) {
   }
 
   // Update index (prepend newest). Cap for sanity.
-  // NOTE: Race condition possible if multiple posts submitted simultaneously.
+  // NOTE: Race condition possible if multiple posts added simultaneously.
   // For low-traffic sites, this is acceptable. Index will eventually be consistent.
   // If strict ordering is required, consider using Durable Objects or atomic operations.
   const rawIndex = await env.KV.get("index");
