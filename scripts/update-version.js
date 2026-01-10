@@ -32,6 +32,13 @@ config = config.replace(
 fs.writeFileSync(configPath, config);
 console.log('✓ Updated CONFIGURATION.md');
 
+// Update package.json
+const packagePath = path.join(rootDir, 'package.json');
+const packageJson = JSON.parse(fs.readFileSync(packagePath, 'utf8'));
+packageJson.version = version;
+fs.writeFileSync(packagePath, JSON.stringify(packageJson, null, 2) + '\n');
+console.log('✓ Updated package.json');
+
 console.log(`\nVersion updated to ${version} in all documentation files.`);
 console.log('\nNext steps:');
 console.log('1. Update CHANGELOG.md manually (add release notes)');
