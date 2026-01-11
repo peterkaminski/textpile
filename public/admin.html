@@ -107,7 +107,9 @@
           });
 
           if (!res.ok) {
-            throw new Error("Invalid token");
+            const data = await res.json().catch(() => ({}));
+            console.error("Login failed:", res.status, data);
+            throw new Error(data.error || data.message || "Invalid token");
           }
 
           document.getElementById("login-section").classList.add("hidden");
@@ -116,7 +118,8 @@
           loadEnvVars();
           loadPosts();
         } catch (err) {
-          error.textContent = "Invalid admin token";
+          console.error("Login error:", err);
+          error.textContent = err.message || "Invalid admin token";
         }
       });
 
