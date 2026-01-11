@@ -56,6 +56,11 @@
       </div>
 
       <div class="admin-section">
+        <h2>Environment Configuration</h2>
+        <div id="env-vars"></div>
+      </div>
+
+      <div class="admin-section">
         <h2>All Posts</h2>
         <div class="actions" style="margin-bottom: 16px;">
           <button id="refresh-btn">Refresh List</button>
@@ -102,17 +107,46 @@
           });
 
           if (!res.ok) {
-            throw new Error("Invalid token");
+            const data = await res.json().catch(() => ({}));
+            console.error("Login failed:", res.status, data);
+            throw new Error(data.error || data.message || "Invalid token");
           }
 
           document.getElementById("login-section").classList.add("hidden");
           document.getElementById("admin-panel").classList.remove("hidden");
           loadStats();
+          loadEnvVars();
           loadPosts();
         } catch (err) {
-          error.textContent = "Invalid admin token";
+          console.error("Login error:", err);
+          error.textContent = err.message || "Invalid admin token";
         }
       });
+
+      async function loadEnvVars() {
+        const res = await fetch("/api/admin/env", {
+          headers: { "Authorization": `Bearer ${TOKEN}` }
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          let html = '';
+          for (const category of data.envVars) {
+            html += `<h3 style="margin-top: 24px; margin-bottom: 12px; font-size: 16px;">${category.category}</h3>`;
+            html += '<table><thead><tr><th>Variable</th><th>Current Value</th><th>Possible Values</th><th>Description</th></tr></thead><tbody>';
+            for (const v of category.variables) {
+              html += `<tr>
+                <td><code>${v.name}</code></td>
+                <td><code>${escapeHtml(v.value)}</code></td>
+                <td class="small">${escapeHtml(v.possibleValues)}</td>
+                <td class="small">${escapeHtml(v.description)}</td>
+              </tr>`;
+            }
+            html += '</tbody></table>';
+          }
+          document.getElementById("env-vars").innerHTML = html;
+        }
+      }
 
       async function loadStats() {
         const res = await fetch("/api/admin/stats", {

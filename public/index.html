@@ -45,7 +45,10 @@
 
       try {
         const res = await fetch("/api/index", { headers: { "accept": "application/json" }});
-        if (!res.ok) throw new Error(`Index fetch failed: ${res.status}`);
+        if (!res.ok) {
+          const errorData = await res.json().catch(() => ({}));
+          throw new Error(errorData.message || errorData.error || `Index fetch failed: ${res.status}`);
+        }
         const data = await res.json();
 
         const items = Array.isArray(data.items) ? data.items : [];
@@ -64,8 +67,40 @@
           `;
         }).join("");
       } catch (err) {
+        console.error("Failed to load posts:", err);
         status.textContent = "Failed to load posts.";
-        list.innerHTML = `<pre>${String(err?.stack || err)}</pre>`;
+        
+        // Show helpful error message
+        const errorMsg = String(err.message || err);
+        if (errorMsg.includes("KV namespace not configured")) {
+          list.innerHTML = `
+            <div class="card">
+              <h2>⚠️ Configuration Required</h2>
+              <p><strong>KV namespace is not configured.</strong></p>
+              <p>To use Textpile, you need to configure a KV namespace binding in Cloudflare Pages:</p>
+              <ol>
+                <li>Go to your Cloudflare Pages project</li>
+                <li>Navigate to <strong>Settings → Functions</strong></li>
+                <li>Scroll to <strong>KV namespace bindings</strong></li>
+                <li>Add a binding with variable name: <code>KV</code></li>
+                <li>Select or create a KV namespace</li>
+                <li>Redeploy your site</li>
+              </ol>
+              <p>See the <a href="https://developers.cloudflare.com/pages/functions/bindings/#kv-namespaces" target="_blank">Cloudflare documentation</a> for more details.</p>
+            </div>
+          `;
+        } else {
+          list.innerHTML = `
+            <div class="card">
+              <h2>Error Loading Posts</h2>
+              <p>${escapeHtml(errorMsg)}</p>
+              <details>
+                <summary>Technical Details</summary>
+                <pre>${escapeHtml(String(err?.stack || err))}</pre>
+              </details>
+            </div>
+          `;
+        }
       }
     </script>
   </body>

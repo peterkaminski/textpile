@@ -1,4 +1,5 @@
 import { allocatePostIdKv } from '../lib/idAllocator.js';
+import { checkKvNamespace } from '../lib/kv.js';
 
 function nowIso() {
   return new Date().toISOString();
@@ -46,6 +47,9 @@ const EXPIRY_MAP = {
 };
 
 export async function onRequestPost({ request, env }) {
+  const kvError = checkKvNamespace(env);
+  if (kvError) return kvError;
+
   let data;
   try {
     data = await request.json();

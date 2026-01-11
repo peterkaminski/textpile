@@ -1,10 +1,12 @@
+// Render post detail page
 import { formatDateTime } from "../../public/date-formatter.js";
-
-function escapeHtml(s) {
-  return s.replace(/[&<>"']/g, (c) => ({ "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;" }[c]));
-}
+import { escapeHtml } from "../lib/escape.js";
+import { checkKvNamespace } from "../lib/kv.js";
 
 export async function onRequestGet({ params, env }) {
+  const kvError = checkKvNamespace(env);
+  if (kvError) return kvError;
+
   const id = params.id;
 
   // Single KV fetch with metadata

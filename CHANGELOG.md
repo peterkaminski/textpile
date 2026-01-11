@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.8.0] - 2026-01-10
+
+### Added
+- Self-documenting environment variable defaults (INSTANCE_NAME, COMMUNITY_NAME, ADMIN_EMAIL now show literal variable names when unset)
+- Environment Variables Reference Table on admin page showing all configuration with current values
+- Comprehensive error handling for missing KV namespace binding across all endpoints
+- Helpful setup instructions displayed when KV namespace is not configured
+- Better error messages in admin login with actual API error details
+
+### Changed
+- Improved error handling on home page with user-friendly configuration guidance
+- Enhanced admin page error display with console logging for debugging
+
+### Fixed
+- Cryptic "Cannot read properties of undefined" errors now show clear "KV namespace not configured" message
+- Admin login errors now display actual error message instead of generic "Invalid admin token"
+- Home page now shows step-by-step setup instructions when KV is missing
+
+### Code Quality
+- Refactored `timingSafeEqual()` into shared utility module (`functions/lib/auth.js`)
+- Refactored `escapeHtml()` and `escapeXml()` into shared utility module (`functions/lib/escape.js`)
+- Created `checkKvNamespace()` utility for consistent KV error handling (`functions/lib/kv.js`)
+- Removed ~100 lines of duplicated code across 17 files
+
 ## [0.7.0] - 2026-01-10
 
 ### ⚠️ BREAKING CHANGES

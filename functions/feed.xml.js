@@ -1,13 +1,5 @@
 // RSS feed for recent posts
-function escapeXml(s) {
-  if (!s) return "";
-  return String(s)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;")
-    .replace(/'/g, "&apos;");
-}
+import { escapeXml } from "./lib/escape.js";
 
 export async function onRequestGet({ env, request }) {
   const rawIndex = await env.KV.get("index");
@@ -27,7 +19,7 @@ export async function onRequestGet({ env, request }) {
   const url = new URL(request.url);
   const baseUrl = `${url.protocol}//${url.host}`;
 
-  const communityName = env.COMMUNITY_NAME || "the community";
+  const communityName = env.COMMUNITY_NAME || "COMMUNITY_NAME";
 
   const rssItems = recentItems.map(item => {
     const pubDate = item.createdAt ? new Date(item.createdAt).toUTCString() : new Date().toUTCString();
