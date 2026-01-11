@@ -172,11 +172,11 @@ After submitting a post, show a unique "delete code" that allows the author to r
 2. Post view page displays:
    ```
    ✓ Post created successfully!
-
+   
    Delete Code: a7b3c9f2
-
+   
    [Copy Delete Code]
-
+   
    Save this code if you want to delete this post later.
    You can delete it at: /remove?code=a7b3c9f2
    ```
@@ -388,83 +388,6 @@ Accept either static token OR valid TOTP code.
 - Requires users to have authenticator app
 - Setup is more involved (scan QR code or manually enter secret)
 - Clock synchronization issues can cause validation failures
-
----
-
-## Environment Variables Reference Table (Admin Page)
-
-**Status:** Proposed
-
-Add a section to the admin page showing all possible environment variables and their current values.
-
-**UI Design:**
-```
-┌──────────────────────────────────────────────────────────┐
-│ Environment Configuration                                │
-├────────────────────┬─────────────────┬────────────────────┤
-│ Variable           │ Current Value   │ Possible Values    │
-├────────────────────┼─────────────────┼────────────────────┤
-│ INSTANCE_NAME      │ "My Textpile"   │ Any string         │
-│ COMMUNITY_NAME     │ "Our Community" │ Any string         │
-│ ADMIN_EMAIL        │ admin@example   │ Email address      │
-│ ADMIN_TOKEN        │ ******** (set)  │ Random string      │
-│ ADD_POST_PASSWORD  │ (unset)         │ Random string      │
-│ DEFAULT_RETENTION  │ 1month          │ 1week, 1month,     │
-│                    │                 │ 3months, 6months,  │
-│                    │                 │ 1year              │
-│ MAX_POST_SIZE      │ 1048576         │ Bytes (number)     │
-│ DATE_FORMAT        │ "MMM D, YYYY"   │ Date format string │
-│ TIME_FORMAT        │ "h:mm a"        │ Time format string │
-│ TIMEZONE           │ (unset)         │ IANA timezone      │
-└────────────────────┴─────────────────┴────────────────────┘
-```
-
-**Rationale:**
-- Helps operators verify configuration at a glance
-- Shows what's unset vs set
-- Documents expected values for each variable
-- Useful for debugging configuration issues
-
-**Implementation notes:**
-- Server-side: read from `env` object
-- Mask sensitive values: show `******** (set)` for tokens/secrets
-- Show `(unset)` for undefined variables
-- Include description column (optional): what each var controls
-- Link to CONFIGURATION.md for detailed documentation
-- Consider showing env vars in categories:
-  - Identity & Branding
-  - Access Control
-  - Retention & Limits
-  - Display & Formatting
-
-**Security considerations:**
-- **NEVER** show actual values of `ADMIN_TOKEN`, `ADD_POST_PASSWORD`, or `TOTP_SECRET`
-- Only show masked indicators: `******** (set)` or `(unset)`
-- Ensure this page is admin-protected
-
-**Additional features:**
-- Color code: green for set, yellow for unset-but-optional, red for unset-and-recommended
-- Show defaults when unset: `(unset, default: 1month)`
-- Add "Edit" button that links to Cloudflare dashboard settings page
-- Validation status: show warning if value looks invalid
-
-**Example implementation:**
-```javascript
-const ENV_VARS = [
-  { name: 'INSTANCE_NAME', sensitive: false, default: 'Textpile', type: 'string' },
-  { name: 'ADMIN_TOKEN', sensitive: true, default: null, type: 'secret' },
-  { name: 'DEFAULT_RETENTION', sensitive: false, default: '1month',
-    options: ['1week', '1month', '3months', '6months', '1year'] },
-  // ...
-];
-
-function getEnvValue(name, sensitive) {
-  const value = env[name];
-  if (sensitive && value) return '******** (set)';
-  if (!value) return '(unset)';
-  return value;
-}
-```
 
 ---
 
