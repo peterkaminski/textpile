@@ -1,4 +1,9 @@
+import { checkKvNamespace } from "../lib/kv.js";
+
 export async function onRequestGet({ env }) {
+  const kvError = checkKvNamespace(env);
+  if (kvError) return kvError;
+
   const raw = await env.KV.get("index");
   const items = raw ? JSON.parse(raw) : [];
 

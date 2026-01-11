@@ -1,3 +1,5 @@
+import { checkKvNamespace } from "../lib/kv.js";
+
 // Timing-safe string comparison to prevent timing attacks
 async function timingSafeEqual(a, b) {
   const aBytes = new TextEncoder().encode(a);
@@ -25,6 +27,9 @@ async function timingSafeEqual(a, b) {
 }
 
 export async function onRequestPost({ request, env }) {
+  const kvError = checkKvNamespace(env);
+  if (kvError) return kvError;
+
   const token = env.ADMIN_TOKEN;
   if (!token) {
     return Response.json({ error: "ADMIN_TOKEN not configured." }, { status: 501 });

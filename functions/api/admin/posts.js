@@ -1,7 +1,11 @@
 // Admin: List all posts with metadata
 import { timingSafeEqual } from "../../lib/auth.js";
+import { checkKvNamespace } from "../../lib/kv.js";
 
 export async function onRequestGet({ request, env }) {
+  const kvError = checkKvNamespace(env);
+  if (kvError) return kvError;
+
   const token = env.ADMIN_TOKEN;
   if (!token) {
     return Response.json({ error: "ADMIN_TOKEN not configured." }, { status: 501 });

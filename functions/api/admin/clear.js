@@ -1,7 +1,11 @@
 // Admin: Clear all posts
 import { timingSafeEqual } from "../../lib/auth.js";
+import { checkKvNamespace } from "../../lib/kv.js";
 
 export async function onRequestPost({ request, env }) {
+  const kvError = checkKvNamespace(env);
+  if (kvError) return kvError;
+
   const token = env.ADMIN_TOKEN;
   if (!token) {
     return Response.json({ error: "ADMIN_TOKEN not configured." }, { status: 501 });
