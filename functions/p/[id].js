@@ -177,12 +177,12 @@ export async function onRequestGet({ params, env }) {
     }
 
     function isTemplateString(format) {
-      return format.includes('\${');
+      return format.includes('$' + '{');
     }
 
     function isValidTemplate(format) {
-      // Check for valid placeholders only (${title} and ${url})
-      const placeholderRegex = /\$\{(\w+)\}/g;
+      // Check for valid placeholders only (\${title} and \${url})
+      const placeholderRegex = /\\$\\{(\\w+)\\}/g;
       const matches = [...format.matchAll(placeholderRegex)];
 
       // Check if all placeholders are either 'title' or 'url'
@@ -211,8 +211,8 @@ export async function onRequestGet({ params, env }) {
       // Template format
       if (isTemplateString(format) && isValidTemplate(format)) {
         return format
-          .replaceAll('\${title}', resolvedTitle)
-          .replaceAll('\${url}', url);
+          .replaceAll('$' + '{title}', resolvedTitle)
+          .replaceAll('$' + '{url}', url);
       }
 
       // Invalid format: warn + fallback to plain
