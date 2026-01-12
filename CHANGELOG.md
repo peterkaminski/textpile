@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- "Copy Title and URL" button on post pages with configurable output format
+  - Built-in formats: `plain` (default), `markdown`, `multiline`
+  - Custom template support with `${title}` and `${url}` placeholders
+  - Configurable via `COPY_TITLE_AND_URL_FORMAT` environment variable
+  - Fallback to "Post from INSTANCE_NAME" for untitled posts
+- Environment variable documentation for `COPY_TITLE_AND_URL_FORMAT` in CONFIGURATION.md
+- Admin interface now displays `COPY_TITLE_AND_URL_FORMAT` configuration
+
 ## [0.8.0] - 2026-01-10
 
 ### Added

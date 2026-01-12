@@ -83,6 +83,12 @@ export async function onRequestGet({ env, request }) {
           value: env.TIME_FORMAT || "(unset)",
           possibleValues: "Time format string (e.g., 'HH:mm', 'h:mm a')",
           description: "Time display format"
+        },
+        {
+          name: "COPY_TITLE_AND_URL_FORMAT",
+          value: env.COPY_TITLE_AND_URL_FORMAT || "(unset)",
+          possibleValues: "plain, markdown, multiline, or custom template",
+          description: "Format for Copy Title and URL button"
         }
       ]
     }

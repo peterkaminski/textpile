@@ -39,26 +39,6 @@ Display expiration information alongside creation dates throughout the interface
 
 ---
 
-## Copy Title and URL Button
-
-**Status:** Proposed
-
-Add a "Copy Title and URL" button alongside the existing "Copy URL" button.
-
-**Format options:**
-- `[Title](URL)` (Markdown link)
-- `Title - URL` (plain text)
-- `Title\nURL` (multi-line)
-- Let user configure preference
-
-**Rationale:** Common sharing pattern - people often want to share both title and link together.
-
-**Implementation notes:**
-- Use same feedback mechanism as "Copy URL"
-- Consider making format configurable via environment variable
-
----
-
 ## Post Comparison Tool
 
 **Status:** Proposed (limited scope)

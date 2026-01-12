@@ -373,6 +373,61 @@ If you're upgrading from Textpile v0.3.x, update your TIME_FORMAT value:
 
 ---
 
+### COPY_TITLE_AND_URL_FORMAT
+
+**Purpose**: Control the output format of the "Copy Title and URL" button on post pages
+
+**Default**: `"plain"`
+
+**Built-in formats**:
+
+- `plain` - Output: `Title - URL`
+  - Use case: Plain text, email, chat apps
+- `markdown` - Output: `[Title](URL)`
+  - Use case: Markdown contexts (GitHub, Discord, etc.)
+- `multiline` - Output: `Title\nURL` (title and URL on separate lines)
+  - Use case: When you want title and URL on separate lines
+
+**Custom templates**:
+
+You may supply a template containing `${title}` and `${url}` placeholders:
+
+```
+title: ${title}
+url: ${url}
+```
+
+**Validation**:
+- Only `${title}` and `${url}` placeholders are allowed
+- Maximum template length: 500 characters
+- If invalid (unknown format, unsupported variables, too long, or malformed), falls back to `plain` with console warning
+
+**Title fallback**: If a post has no title, uses `Post from [INSTANCE_NAME]`
+
+**Set in**: Cloudflare Pages → Settings → Environment variables
+
+```
+COPY_TITLE_AND_URL_FORMAT=markdown
+```
+
+**Examples**:
+
+```bash
+# Plain text format (default)
+COPY_TITLE_AND_URL_FORMAT=plain
+
+# Markdown link format
+COPY_TITLE_AND_URL_FORMAT=markdown
+
+# Multi-line format
+COPY_TITLE_AND_URL_FORMAT=multiline
+
+# Custom template
+COPY_TITLE_AND_URL_FORMAT=title: ${title}\nurl: ${url}
+```
+
+---
+
 ### Combined Date & Time Examples
 
 | Region | DATE_FORMAT | TIME_FORMAT | Combined Output |
@@ -461,6 +516,7 @@ MAX_KV_SIZE=1048576000
 | `DEFAULT_RETENTION` | `"1month"` | Default retention period | No |
 | `DATE_FORMAT` | `"medium"` | Date display format | No |
 | `TIME_FORMAT` | `"short"` | Time display format | No |
+| `COPY_TITLE_AND_URL_FORMAT` | `"plain"` | Copy Title and URL format | No |
 | `MAX_POST_SIZE` | `1048576` | Max post size (bytes) | No |
 | `MAX_KV_SIZE` | `1048576000` | Storage target (bytes) | No |
 

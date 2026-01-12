@@ -11,6 +11,7 @@ export async function onRequestGet({ env }) {
       defaultRetention: env.DEFAULT_RETENTION || "1month",
       dateFormat: env.DATE_FORMAT || "YYYY-MM-DD",  // ICU format string (e.g., "DD/MM/YYYY", "YYYY年MM月DD日")
       timeFormat: env.TIME_FORMAT || "HH:mm",       // ICU format string (e.g., "h:mm a", "HH:mm:ss")
+      copyTitleAndUrlFormat: env.COPY_TITLE_AND_URL_FORMAT || "plain",
       textpileVersion: TEXTPILE_VERSION,
     }
   }, {

@@ -105,6 +105,7 @@ export async function onRequestGet({ params, env }) {
     <button id="toggle-render-btn">View as plain text</button>
     <button id="copy-btn">Copy text</button>
     <button id="copy-url-btn">Copy URL</button>
+    <button id="copy-title-url-btn">Copy Title and URL</button>
     <span id="copy-msg" class="small"></span>
   </div>
 
@@ -160,6 +161,86 @@ export async function onRequestGet({ params, env }) {
         setTimeout(() => msg.textContent = "", 2000);
       } catch (err) {
         alert("Failed to copy URL: " + err.message);
+      }
+    });
+
+    // Copy Title and URL functionality
+    async function fetchConfig() {
+      try {
+        const response = await fetch('/api/config');
+        const data = await response.json();
+        return data.config;
+      } catch (err) {
+        console.error('Failed to fetch config:', err);
+        return {};
+      }
+    }
+
+    function isTemplateString(format) {
+      return format.includes('\${');
+    }
+
+    function isValidTemplate(format) {
+      // Check for valid placeholders only (${title} and ${url})
+      const placeholderRegex = /\$\{(\w+)\}/g;
+      const matches = [...format.matchAll(placeholderRegex)];
+
+      // Check if all placeholders are either 'title' or 'url'
+      for (const match of matches) {
+        if (match[1] !== 'title' && match[1] !== 'url') {
+          return false;
+        }
+      }
+
+      // Check length (arbitrary limit of 500 chars to prevent abuse)
+      if (format.length > 500) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function formatTitleAndUrl({ title, url, format, instanceName }) {
+      const resolvedTitle = title?.trim() ? title.trim() : \`Post from \${instanceName}\`;
+
+      // Built-in formats
+      if (format === 'markdown') return \`[\${resolvedTitle}](\${url})\`;
+      if (format === 'multiline') return \`\${resolvedTitle}\\n\${url}\`;
+      if (format === 'plain') return \`\${resolvedTitle} - \${url}\`;
+
+      // Template format
+      if (isTemplateString(format) && isValidTemplate(format)) {
+        return format
+          .replaceAll('\${title}', resolvedTitle)
+          .replaceAll('\${url}', url);
+      }
+
+      // Invalid format: warn + fallback to plain
+      console.warn('Invalid COPY_TITLE_AND_URL_FORMAT; falling back to plain');
+      return \`\${resolvedTitle} - \${url}\`;
+    }
+
+    document.getElementById("copy-title-url-btn").addEventListener("click", async () => {
+      try {
+        const config = await fetchConfig();
+        const postTitle = ${JSON.stringify(title)};
+        const postUrl = window.location.href;
+        const format = config.copyTitleAndUrlFormat || 'plain';
+        const instanceName = config.instanceName || 'Textpile';
+
+        const formattedText = formatTitleAndUrl({
+          title: postTitle,
+          url: postUrl,
+          format: format,
+          instanceName: instanceName
+        });
+
+        await navigator.clipboard.writeText(formattedText);
+        const msg = document.getElementById("copy-msg");
+        msg.textContent = "Copied!";
+        setTimeout(() => msg.textContent = "", 2000);
+      } catch (err) {
+        alert("Failed to copy: " + err.message);
       }
     });
   </script>

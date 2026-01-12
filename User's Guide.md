@@ -86,7 +86,7 @@ Individual posts (`/p/:id`) display:
 - Title and metadata (creation date, post ID, expiry date)
 - Full Markdown-rendered content
 - **View toggle button**: Switch between formatted Markdown and plain text
-- **Copy text button**: Copy the raw Markdown to your clipboard
+- **Copy buttons**: Copy text, Copy URL, or Copy Title and URL to your clipboard
 - Navigation links: "Add Post" to add new content, "Home" to return to homepage
 
 **Post View Features:**
@@ -97,10 +97,12 @@ Individual posts (`/p/:id`) display:
 - Click "View formatted" to return to rendered view
 - Useful for copying formatted content or troubleshooting rendering
 
-**Copy Post Text:**
-- Click "Copy text" button to copy raw Markdown to clipboard
-- Shows "Copied!" confirmation message
-- Great for saving your own posts or quoting content
+**Copy Buttons:**
+- **Copy text**: Copy raw Markdown to clipboard
+- **Copy URL**: Copy the post URL to clipboard
+- **Copy Title and URL**: Copy formatted title and URL (format controlled by admin)
+- Shows "Copied!" or "URL copied!" confirmation message
+- Great for saving your own posts, sharing content, or creating references
 - **Remember**: Always keep your own copies! Textpile doesn't back up content.
 
 ### Expired Content
