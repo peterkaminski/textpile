@@ -28,13 +28,13 @@ cd textpile
 2. Navigate to **Workers KV**
 3. Click **+ Create Instance**
 4. Name it (e.g., `TEXTPILE_STORAGE` or `COMMUNITY_PASTES`)
-5. Click **Add**
+5. Click **Create**
 6. Note the namespace ID for later
 
 ### 3. Create a Cloudflare Pages Project
 
 1. In Cloudflare Dashboard, go to **Workers & Pages**
-2. Click **Create application** → **Pages** → **Connect to Git**
+2. Click **Create application** → "Looking to deploy Pages? **Get started**" → **Import an existing Git repository** Get Started
 3. Authorize Cloudflare to access your GitHub account
 4. Select your Textpile repository
 5. Configure build settings:
@@ -45,17 +45,21 @@ cd textpile
 
 ### 4. Bind the KV Namespace
 
-1. In your Pages project, go to **Settings** → **Functions**
-2. Scroll to **KV namespace bindings**
-3. Click **Add binding**
-4. Configure:
+1. From the Dashboard, select "Workers & Pages" from the "Recents" or
+   "Compute &AI" menu
+2. On the "Workers & Pages" webpage select the listed " application
+3. On "Workers & Pages / textpile" page select "Settings"  
+4. From the "Build" menu select "Bindings" or scroll to "Bindings"  
+5. Select "+ Add" to the right of "Bindings"
+6. From "Add a resource binding" select "KV namespace"
+   Configure:  
    - **Variable name**: `KV` (must be exactly this)
    - **KV namespace**: Select the namespace you created in step 2
-5. Click **Save**
+7. Click **Save**  
 
 ### 5. Configure Environment Variables (Optional)
 
-Navigate to **Settings** → **Environment variables**
+Navigate to **Settings** → **Variables and Secrets**  
 
 **For complete configuration reference**, see **[CONFIGURATION.md](CONFIGURATION.md)** - comprehensive documentation of all environment variables with examples, defaults, and best practices.
 
@@ -65,7 +69,7 @@ Navigate to **Settings** → **Environment variables**
 
 To require a shared token for submissions:
 
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `ADD_POST_PASSWORD`
 3. **Value**: A secret string (e.g., generate with `openssl rand -hex 32`)
 4. **Environment**: Production (and Preview if desired)
@@ -80,7 +84,7 @@ To require a shared token for submissions:
 
 To enable the admin interface at `/admin` and `/api/remove` endpoint:
 
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `ADMIN_TOKEN`
 3. **Value**: A different secret string (e.g., generate with `openssl rand -hex 32`)
 4. **Environment**: Production
@@ -102,7 +106,7 @@ curl -X POST https://YOURDOMAIN/api/remove \
 
 Customize the community name shown throughout the site:
 
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `COMMUNITY_NAME`
 3. **Value**: Your community name (e.g., "Acme Research Team")
 4. **Environment**: Production
@@ -114,7 +118,7 @@ Customize the community name shown throughout the site:
 
 Display a contact email in the footer of all pages:
 
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `ADMIN_EMAIL`
 3. **Value**: Your contact email (e.g., "admin@example.com")
 4. **Environment**: Production
@@ -126,7 +130,7 @@ Display a contact email in the footer of all pages:
 
 Set the default retention window selected in the submit form:
 
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `DEFAULT_RETENTION`
 3. **Value**: One of: `1week`, `1month`, `3months`, `6months`, `1year`
 4. **Environment**: Production
@@ -139,7 +143,7 @@ Set the default retention window selected in the submit form:
 Customize how dates and times are displayed:
 
 **Date Format:**
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `DATE_FORMAT`
 3. **Value**: One of: `short`, `medium`, `long`, `full`
 4. **Environment**: Production
@@ -152,7 +156,7 @@ Customize how dates and times are displayed:
 - `full`: Saturday, January 4, 2026
 
 **Time Format:**
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `TIME_FORMAT`
 3. **Value**: One of: `short`, `medium`
 4. **Environment**: Production
@@ -167,14 +171,14 @@ Customize how dates and times are displayed:
 Control maximum post and total storage sizes:
 
 **Maximum Post Size:**
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `MAX_POST_SIZE`
 3. **Value**: Size in bytes (default: `1048576` = 1 MB)
 4. **Environment**: Production
 5. Click **Save**
 
 **Maximum KV Storage:**
-1. Click **Add variable**
+1. Click "+ Add" to the right of "**Variables and Secrets**"
 2. **Variable name**: `MAX_KV_SIZE`
 3. **Value**: Size in bytes (default: `1048576000` = 1000 MB)
 4. **Environment**: Production
@@ -201,11 +205,14 @@ npm install -g wrangler
 ```
 
 ### Create Local KV Namespace
+- Note: first time must grant authorization to Wrangler to your CF account.  
+  - returns `Creating namespace with title "KV_preview"  ` and json
+  binding to add to a local configuration file (e.g., `./wrangler.jsonc`)  
 
 ```bash
-wrangler kv:namespace create KV --preview
+wrangler kv namespace create KV --preview
 ```
-
+  
 ### Run Development Server
 
 ```bash
