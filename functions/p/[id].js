@@ -88,7 +88,7 @@ export async function onRequestGet({ params, env }) {
     const daysRemaining = Math.ceil(msRemaining / (1000 * 60 * 60 * 24));
 
     if (daysRemaining > 0) {
-      expirationInfo = ` · Expires ${formattedExpiry} (${daysRemaining} day${daysRemaining === 1 ? '' : 's'})`;
+      expirationInfo = ` · Expires ${formattedExpiry}`;
     }
   }
 
@@ -318,10 +318,10 @@ export async function onRequestGet({ params, env }) {
         let bannerClass = "info-banner";
 
         if (daysRemaining <= 7) {
-          message = \`⚠️ This post will expire in \${daysRemaining} day\${daysRemaining === 1 ? '' : 's'}. Save it now if you want to keep it.\`;
+          message = \`⚠️ This post will expire in <strong>\${daysRemaining} day\${daysRemaining === 1 ? '' : 's'}</strong>. Save it now if you want to keep it.\`;
           bannerClass = "info-banner warning";
         } else {
-          message = \`This post will expire in \${daysRemaining} days. Save it now if you want to keep it.\`;
+          message = \`This post will expire in <strong>\${daysRemaining} days</strong>. Save it now if you want to keep it.\`;
         }
 
         banner.innerHTML = \`<div class="\${bannerClass}">\${message}</div>\`;

@@ -51,7 +51,7 @@
         if (daysRemaining <= 0) return "";
 
         const formattedDate = formatDate(expiresAt);
-        return ` · Expires ${formattedDate} (${daysRemaining} day${daysRemaining === 1 ? '' : 's'})`;
+        return ` · Expires ${formattedDate}`;
       }
 
       // Initialize page (load config, apply community name, update page title, add footer)
