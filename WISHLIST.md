@@ -224,7 +224,6 @@ FLAG_WINDOW_HOURS=24      # Time window for collecting flags
 
 **Privacy considerations:**
 - Store only hashed IP addresses, not full IPs
-- Or use IP address + date (not timestamp) to allow some privacy
 - Clear flag data when post expires
 
 **Admin visibility:**

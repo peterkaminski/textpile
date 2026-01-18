@@ -127,24 +127,6 @@ This document tracks implementation of major enhancements to Textpile. Check off
   - [ ] Accept single ID or array of IDs
   - [ ] Log each deletion to audit log
 
-### Audit Logging
-- [ ] Implement audit log storage in KV
-  - [ ] Key: `audit_log`
-  - [ ] Value: Array of log entries (capped at 1000)
-  - [ ] Entry format: `{timestamp, action, ip, userAgent, details}`
-
-- [ ] Log post submissions
-  - [ ] Update `functions/api/submit.js`
-  - [ ] Capture IP from CF-Connecting-IP header
-  - [ ] Capture User-Agent
-
-- [ ] Log post deletions
-  - [ ] Update `functions/api/remove.js`
-  - [ ] Log admin who deleted (from token)
-
-- [ ] Log admin actions
-  - [ ] Import, export, clear all
-
 **Files to create:**
 - `public/admin.html`
 - `functions/api/admin/posts.js`
