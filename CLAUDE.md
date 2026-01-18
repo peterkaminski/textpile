@@ -123,6 +123,44 @@ wrangler pages dev public/ --kv=KV
 - Rendering happens client-side in `/p/:id` to keep Functions lightweight
 - HTML escaping is critical for security (prevent XSS)
 
+## Important Coding Patterns
+
+### Template Literal Escaping in Server Functions
+
+**CRITICAL**: When embedding JavaScript code inside template literals in server-side functions (e.g., `functions/p/[id].js`), backslashes in regex patterns must be **double-escaped**.
+
+**Problem**: JavaScript regex patterns use backslashes for escape sequences. When these patterns are inside a template literal that's being constructed server-side, the backslashes are processed during template literal evaluation, causing the regex to break.
+
+**Examples**:
+
+❌ **Wrong** (inside template literal):
+```javascript
+const html = `<script>
+  filename.replace(/\s+/g, ' ')       // \s becomes just s
+  filename.replace(/^\.+/, '')        // \. becomes just .
+  filename.replace(/[/\\:*?"<>|]/g)   // \\ becomes just \
+</script>`;
+```
+
+✅ **Correct** (inside template literal):
+```javascript
+const html = `<script>
+  filename.replace(/\\s+/g, ' ')      // \\s → \s in output
+  filename.replace(/^\\.+/, '')       // \\. → \. in output
+  filename.replace(/[/\\\\:*?"<>|]/g) // \\\\ → \\ in output
+</script>`;
+```
+
+**Rule of thumb**: When writing JavaScript regex inside a template literal in server functions, double all backslashes:
+- `\s` → `\\s`
+- `\d` → `\\d`
+- `\.` → `\\.`
+- `\\` → `\\\\`
+
+**Where this applies**:
+- All `functions/**/*.js` files that return HTML with embedded `<script>` tags
+- Particularly `functions/p/[id].js` which has extensive client-side JavaScript
+
 ## Security Considerations
 
 - No authentication or user identity is collected or stored
