@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.11.0] - 2026-01-18
+
+### Added
+- Post expiration awareness features for better user communication
+  - Expiration warning banner on post pages showing days remaining
+  - Warning banner appears between metadata line and action buttons
+  - Different styling for posts expiring soon (≤7 days: amber warning, >7 days: blue info)
+  - Days remaining displayed in bold within banner messages
+- Expiration dates in index listing
+  - Format: "Created Jan 8 · Expires Feb 8 (29 days)"
+  - Includes both expiration date and days remaining count
+- Expiration dates in post view metadata
+  - Format: "Created Jan 8 · Expires Feb 8"
+  - Days count omitted (shown in banner instead)
+- Visual styling for expiration information
+  - Smaller, lighter font (13px, 75% opacity) matching metadata style
+  - Compact vertical padding (0.5em) for unobtrusive display
+  - Consistent rounded corners and subtle borders
+
+### Fixed
+- Template literal escaping documentation in CLAUDE.md now covers both regex and template syntax
+- Clarified that escaping only applies to server-side functions, not client-side files
+
 ## [0.10.0] - 2026-01-17
 
 ### Added
