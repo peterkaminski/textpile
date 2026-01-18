@@ -259,10 +259,10 @@ export async function onRequestGet({ params, env }) {
         console.log('After initial assignment:', filename);
 
         filename = filename
-          .replace(/[/\\:*?"<>|]/g, '-')  // Replace invalid chars with dash
-          .replace(/\s+/g, ' ')            // Normalize whitespace
+          .replace(/[/\\\\:*?"<>|]/g, '-')  // Replace invalid chars with dash
+          .replace(/\\s+/g, ' ')            // Normalize whitespace
           .trim()                          // Trim edges
-          .replace(/^\.+/, '')             // Remove leading dots
+          .replace(/^\\.+/, '')             // Remove leading dots
           .substring(0, 200);              // Limit length
 
         console.log('After sanitization:', filename);
