@@ -78,9 +78,9 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed release notes and version history.
 
 ## Authorship & License
 
-**Authors**: ChatGPT 5.2, Claude Code Sonnet 4.5, and Peter Kaminski
-**Copyright**: Peter Kaminski
-**License**: MIT (see [LICENSE](LICENSE))
+- **Authors**: ChatGPT 5.2, Claude Code Sonnet 4.5, and Peter Kaminski
+- **Copyright**: Peter Kaminski
+- **License**: MIT (see [LICENSE](LICENSE))
 
 ## Design Principles
 
