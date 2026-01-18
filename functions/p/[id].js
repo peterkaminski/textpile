@@ -106,6 +106,7 @@ export async function onRequestGet({ params, env }) {
     <button id="copy-btn">Copy text</button>
     <button id="copy-url-btn">Copy URL</button>
     <button id="copy-title-url-btn">Copy Title and URL</button>
+    <button id="download-btn">Download</button>
     <span id="copy-msg" class="small"></span>
   </div>
 
@@ -241,6 +242,48 @@ export async function onRequestGet({ params, env }) {
         setTimeout(() => msg.textContent = "", 2000);
       } catch (err) {
         alert("Failed to copy: " + err.message);
+      }
+    });
+
+    // Download functionality
+    document.getElementById("download-btn").addEventListener("click", () => {
+      try {
+        const postTitle = ${JSON.stringify(title)};
+        const postId = ${JSON.stringify(id)};
+
+        // Sanitize filename by replacing filesystem-unfriendly characters
+        let filename = postTitle || 'untitled';
+        filename = filename
+          .replace(/[/\\:*?"<>|]/g, '-')  // Replace invalid chars with dash
+          .replace(/\s+/g, ' ')            // Normalize whitespace
+          .trim()                          // Trim edges
+          .replace(/^\.+/, '')             // Remove leading dots
+          .substring(0, 200);              // Limit length
+
+        // Fallback to post ID if title becomes empty after sanitization
+        if (!filename) {
+          filename = postId;
+        }
+
+        // Add .md extension
+        filename = filename + '.md';
+
+        // Create blob and download
+        const blob = new Blob([raw], { type: 'text/markdown' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+
+        const msg = document.getElementById("copy-msg");
+        msg.textContent = "Downloaded!";
+        setTimeout(() => msg.textContent = "", 2000);
+      } catch (err) {
+        alert("Failed to download: " + err.message);
       }
     });
   </script>
