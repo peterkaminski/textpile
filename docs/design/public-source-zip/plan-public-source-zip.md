@@ -95,7 +95,7 @@ echo "✓ Created $OUTFILE"
 
 **File**: `functions/api/config.js`
 
-**Change**: Add `publicSourceZip` to config object (after line 15):
+**Change**: Add `publicSourceZip` and `softwareName` to config object (after line 15):
 
 ```javascript
 export async function onRequestGet({ env }) {
@@ -111,6 +111,7 @@ export async function onRequestGet({ env }) {
       copyTitleAndUrlFormat: env.COPY_TITLE_AND_URL_FORMAT || "plain",
       textpileVersion: TEXTPILE_VERSION,
       publicSourceZip: env.PUBLIC_SOURCE_ZIP === "true",  // NEW LINE
+      softwareName: env.SOFTWARE_NAME || "Textpile",      // NEW LINE
     }
   }, {
     headers: {
@@ -133,7 +134,7 @@ export async function onRequestGet({ env }) {
 ```javascript
 footerHTML += '<br>';
 footerHTML += 'This site runs ';
-footerHTML += `Textpile ${escapeHtml(CONFIG.textpileVersion)}`;
+footerHTML += `${escapeHtml(CONFIG.softwareName)} ${escapeHtml(CONFIG.textpileVersion)}`;
 footerHTML += ` &middot; <a href="https://github.com/peterkaminski/textpile">GitHub repo</a>`;
 
 // Add source zip link if enabled
@@ -143,46 +144,23 @@ if (CONFIG.publicSourceZip) {
 }
 ```
 
-**Note**: Changes "source" link text to "GitHub repo" and adds conditional source zip link.
+**Note**: Changes "source" link text to "GitHub repo", uses `CONFIG.softwareName` for the software name (allows forks to rebrand via env var), and adds conditional source zip link.
 
 ---
 
 ## Phase 4: Robots & Crawling Policy
 
-### 4.1 Create robots.txt
+**Decision: Not implementing bot restrictions.**
 
-**File**: `public/robots.txt` (new file)
+We will NOT create `robots.txt` or `_headers` with X-Robots-Tag to block crawler access to the source zip.
 
-```txt
-User-agent: *
-Disallow: /assets/textpile-
+**Rationale:**
+- It's acceptable for bots to retrieve the source zip - it's public information
+- The zip is small (~200KB) and shouldn't cause bandwidth issues
+- Over-blocking crawlers can prevent legitimate archival and research uses
+- Simpler implementation without the extra files
 
-User-agent: GPTBot
-Disallow: /assets/textpile-
-
-User-agent: Google-Extended
-Disallow: /assets/textpile-
-
-User-agent: CCBot
-Disallow: /assets/textpile-
-
-User-agent: anthropic-ai
-Disallow: /assets/textpile-
-
-User-agent: Claude-Web
-Disallow: /assets/textpile-
-```
-
-### 4.2 Create _headers for X-Robots-Tag
-
-**File**: `public/_headers` (new file)
-
-```
-/assets/*.zip
-  X-Robots-Tag: noindex, nofollow
-```
-
-**Note**: Cloudflare Pages supports `_headers` files for custom headers.
+If crawler abuse becomes an issue in the future, this decision can be revisited. For now, we trust that bots will be respectful and that Cloudflare's built-in protections are sufficient.
 
 ---
 
@@ -213,17 +191,13 @@ Some Textpile instances may choose to offer a downloadable source zip for easier
 - All tracked files in the git repository at deployment time
 - Excludes `node_modules`, `.git`, and other untracked files
 
-**Robots/AI crawling:**
-- The zip is blocked from indexing via `robots.txt` and `X-Robots-Tag` headers
-- This prevents search engines and AI crawlers from ingesting the source multiple times
-
 ### Fork Naming & Provenance
 
 If you fork Textpile and deploy a modified public instance, please help maintain clarity about what instance users are visiting:
 
 **Recommended practices:**
+- Rebrand the software name (e.g., "MyCommunity Paste" instead of "Textpile")
 - Add a suffix to the version string (e.g., `0.11.1-mycommunity`)
-- Or rename the project in the footer (e.g., "MyCommunity Paste" instead of "Textpile")
 - Update `INSTANCE_NAME` environment variable to reflect your community name
 
 **Why this matters:**
@@ -231,10 +205,14 @@ If you fork Textpile and deploy a modified public instance, please help maintain
 - Bug reports go to the right maintainer
 - Credit is properly attributed
 
-**How to customize:**
-1. **Version suffix**: Edit `public/version.js` and append your suffix
-2. **Instance name**: Set `INSTANCE_NAME` environment variable in Cloudflare Pages
-3. **Footer text**: Modify `public/textpile-utils.js` if you want custom branding
+**How to customize (easiest to most complex):**
+1. **Software name** (easiest): Set `SOFTWARE_NAME` environment variable (e.g., `SOFTWARE_NAME="MyPaste"`)
+   - Footer will show: "This site runs MyPaste {version}"
+   - No code changes needed
+2. **Version suffix**: Edit `public/version.js` and append your suffix (e.g., `0.11.1-myorg`)
+3. **Instance name**: Set `INSTANCE_NAME` environment variable in Cloudflare Pages
+   - Controls the site title and header link text
+4. **Footer customization** (most control): Modify `public/textpile-utils.js` if you want complete custom branding
 
 This is a courtesy guideline, not a legal requirement (MIT license allows any use). We trust the community to be good stewards of attribution.
 ```
@@ -273,10 +251,36 @@ PUBLIC_SOURCE_ZIP="true"
 1. During build, creates `/assets/textpile-{version}-source.zip`
 2. Adds footer link: "Download source zip from this instance"
 3. Zip includes all git-tracked files (excludes node_modules, .git, etc.)
-4. Robots.txt blocks indexing to prevent redundant AI training data
 
 **Build requirement:**
 Cloudflare Pages must have a build command configured (usually `npm run build`). If no build command is set, the zip will not be generated even if this variable is set to `"true"`.
+
+### SOFTWARE_NAME
+
+**Type**: String
+**Default**: `"Textpile"`
+**Optional**: Yes
+
+Sets the software name displayed in the footer ("This site runs {SOFTWARE_NAME} {version}").
+
+**When to set:**
+- You've forked Textpile and want to rebrand it
+- You want to distinguish your fork from official Textpile instances
+- You want clear attribution for your custom version
+
+**When to leave default:**
+- Running an unmodified Textpile instance
+- You're okay with the "Textpile" branding
+
+**Example:**
+```bash
+SOFTWARE_NAME="MyCommunity Paste"
+```
+
+This will display: "This site runs MyCommunity Paste 0.11.1" in the footer.
+
+**For fork maintainers:**
+This is the easiest way to rebrand a fork without modifying code. See CONTRIBUTING.md "Fork Naming & Provenance" section for additional branding options.
 ```
 
 ### 5.3 Update README.md
@@ -303,6 +307,7 @@ Cloudflare Pages must have a build command configured (usually `npm run build`).
 
 ```markdown
 - `PUBLIC_SOURCE_ZIP` (optional) - Set to `"true"` to generate downloadable source zip during build (default: disabled)
+- `SOFTWARE_NAME` (optional) - Software name displayed in footer (default: "Textpile"). Use for fork rebranding.
 ```
 
 **Change 2**: Add to "Important Coding Patterns" section:
@@ -321,7 +326,6 @@ The build process can optionally generate a source zip using `git archive`:
 - Uses `git archive` to automatically exclude node_modules and untracked files
 - Reads version from `public/version.js` (source of truth)
 - Outputs to `public/assets/textpile-{version}-source.zip`
-- Blocked from crawlers via robots.txt and X-Robots-Tag header
 ```
 
 ---
@@ -351,8 +355,6 @@ ls public/assets/ 2>/dev/null || echo "Assets dir doesn't exist (expected)"
 3. **With `PUBLIC_SOURCE_ZIP=true`**: Verify build succeeds, zip exists, footer link appears
 4. Test zip download
 5. Extract and verify contents match repository
-6. Check robots.txt is accessible at `/robots.txt`
-7. Verify X-Robots-Tag header on zip file
 
 ### 6.3 Footer Display Testing
 
@@ -362,7 +364,10 @@ ls public/assets/ 2>/dev/null || echo "Assets dir doesn't exist (expected)"
 2. **Load homepage with PUBLIC_SOURCE_ZIP=true**
    - Should show: "This site runs Textpile {version} · GitHub repo · Download source zip from this instance"
 
-3. **Click source zip link**, verify download works and filename is correct
+3. **Load homepage with SOFTWARE_NAME="MyPaste"**
+   - Should show: "This site runs MyPaste {version} · GitHub repo"
+
+4. **Click source zip link**, verify download works and filename is correct
 
 ---
 
@@ -392,18 +397,16 @@ ls public/assets/ 2>/dev/null || echo "Assets dir doesn't exist (expected)"
 ### New Files
 
 - `scripts/build-source-zip.sh` - Build script for source zip
-- `public/robots.txt` - Crawler exclusion rules
-- `public/_headers` - X-Robots-Tag for zip files
 
 ### Modified Files
 
 - `package.json` - Add build script
-- `functions/api/config.js` - Expose PUBLIC_SOURCE_ZIP
-- `public/textpile-utils.js` - Update footer with conditional zip link
+- `functions/api/config.js` - Expose PUBLIC_SOURCE_ZIP and SOFTWARE_NAME
+- `public/textpile-utils.js` - Update footer with conditional zip link and SOFTWARE_NAME support
 - `CONTRIBUTING.md` - Add fork naming guidance and source zip docs
-- `CONFIGURATION.md` - Document PUBLIC_SOURCE_ZIP variable
+- `CONFIGURATION.md` - Document PUBLIC_SOURCE_ZIP and SOFTWARE_NAME variables
 - `README.md` - Add feature mention and deployment step
-- `CLAUDE.md` - Document source zip generation pattern
+- `CLAUDE.md` - Document source zip generation pattern and new env vars
 
 ### Generated Files (not committed)
 
@@ -425,13 +428,16 @@ Consistent with existing release process where `public/version.js` is source of 
 ### 4. Client-Side Footer Rendering
 Maintain existing pattern where footer is generated in `textpile-utils.js` with config from API.
 
-### 5. Robots Double-Layer
-Both robots.txt and X-Robots-Tag provide defense-in-depth against unwanted indexing.
+### 5. SOFTWARE_NAME Environment Variable
+Provide an easy rebranding mechanism for forks via environment variable instead of requiring code changes. Balances simplicity (no code editing needed) with flexibility (can still edit code if needed).
 
-### 6. No .gitignore for assets/
+### 6. No Bot Restrictions
+We deliberately chose NOT to implement robots.txt or X-Robots-Tag headers to block crawlers from accessing the source zip. The zip is public information, small in size, and we trust that Cloudflare's built-in protections are sufficient. Over-blocking can prevent legitimate archival and research uses.
+
+### 7. No .gitignore for assets/
 We don't gitignore `public/assets/` because the zip is only created during Cloudflare Pages build, not locally. Local builds won't create it unless explicitly testing.
 
-### 7. Link Text Change
+### 8. Link Text Change
 Change "source" → "GitHub repo" to clarify that it links to the official repository, not this specific instance's source. The new "Download source zip from this instance" link provides instance-specific source.
 
 ---
@@ -446,15 +452,17 @@ When this feature ships, add to CHANGELOG.md:
   - Automatically generates source code zip during Cloudflare Pages builds when enabled
   - Uses `git archive` to include all tracked files (excludes node_modules, .git, etc.)
   - Adds footer link "Download source zip from this instance" when enabled
-  - Blocked from search engine and AI crawler indexing via robots.txt and X-Robots-Tag
   - Build script: `scripts/build-source-zip.sh`
   - Output: `/assets/textpile-{version}-source.zip`
+- `SOFTWARE_NAME` environment variable for easy fork rebranding
+  - Allows forks to change software name in footer without code modifications
+  - Default: "Textpile"
+  - Example: Set to "MyCommunity Paste" to show "This site runs MyCommunity Paste 0.11.1"
 - Fork naming guidance in CONTRIBUTING.md for maintaining attribution and clarity
-- robots.txt file to control crawler behavior
-- _headers file for X-Robots-Tag on zip files
 
 ### Changed
 - Footer link text: "source" → "GitHub repo" for clarity about official repository vs instance source
+- Footer now uses configurable `SOFTWARE_NAME` instead of hardcoded "Textpile"
 ```
 
 ---
