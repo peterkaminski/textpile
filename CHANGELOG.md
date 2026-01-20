@@ -7,6 +7,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-01-20
+
+### 🎉 Stable Release
+
+Textpile 1.0.0 marks the project as production-ready and stable. The codebase has been battle-tested, the API is stable, and the feature set is complete for typical community use cases. This release focuses on making Textpile easy to fork, deploy, and customize.
+
+### Added
+
+- **Public Source Zip Feature**
+  - Automatic source code download via `/assets/textpile-{version}-source.zip`
+  - Generated during Cloudflare Pages build using `git archive`
+  - Controlled by `PUBLIC_SOURCE_ZIP` environment variable (default: disabled)
+  - Clean git exports automatically exclude node_modules and untracked files
+  - Version number embedded in filename for clarity
+
+- **Smart 404 Page**
+  - Custom 404 page with intelligent source zip detection
+  - Automatically checks if source zip is available
+  - Provides helpful "Get the Source Code" link when applicable
+  - Falls back to standard 404 message when source zip is unavailable
+
+- **Fork Rebranding Support**
+  - `SOFTWARE_NAME` environment variable for customizing software name in footer
+  - Defaults to "Textpile" for canonical instances
+  - Allows forks to rebrand while maintaining attribution
+
+- **Documentation Improvements**
+  - Organized documentation structure with `docs/` directory
+  - Added `docs/adr/` for Architecture Decision Records
+  - Added ADR 002: Missing Source Zip Handling
+  - Moved `ROUTES.md` to `docs/ROUTES.md` for better organization
+  - Updated ROUTES.md with missing routes (`/404`, `/api/admin/env`)
+  - Enhanced INSTALLATION.md with public source zip configuration instructions
+
+- **Footer Enhancements**
+  - Open source messaging: "Textpile is open source, you can run your own site for free."
+  - Software name now configurable for forks
+  - Clear attribution and encouragement to self-host
+
+### Changed
+
+- **Documentation Organization**
+  - Cleaned up root directory (reduced from 16 to 10 markdown files)
+  - Removed completed implementation plans (preserved in git history)
+  - Better separation between essential and supplementary documentation
+  - Root now contains only user/admin-facing and essential development docs
+
+### Removed
+
+- Completed implementation plan documents (preserved in git history):
+  - `IMPLEMENTATION-PLAN-COPY-TITLE-URL.md` (v0.9.0 feature completed)
+  - `IMPLEMENTATION-PLAN.md` (v0.3.0 completed)
+  - `IMPLEMENTATION-POST-EXPIRATION-AWARENESS.md` (v0.11.0 feature completed)
+  - `POST-ID-V2-KV.md` (implementation completed)
+  - `Textpile Initial Implementation Plan, 2026-01-04.md` (historical artifact)
+
+### Technical Details
+
+- Build script: `scripts/build-source-zip.sh` (executable during Pages build)
+- Source zip excludes: `.git/`, `node_modules/`, untracked files
+- Version source of truth: `public/version.js` (auto-synced to other files)
+- Fork detection: Checks for file existence at runtime (no build-time coupling)
+
 ## [0.11.1] - 2026-01-19
 
 ### Added
