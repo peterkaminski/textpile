@@ -140,7 +140,7 @@ footerHTML += ` &middot; <a href="https://github.com/peterkaminski/textpile">Git
 // Add source zip link if enabled
 if (CONFIG.publicSourceZip) {
   const zipUrl = `/assets/textpile-${escapeHtml(CONFIG.textpileVersion)}-source.zip`;
-  footerHTML += ` &middot; <a href="${zipUrl}">Download source zip from this instance</a>`;
+  footerHTML += ` &middot; <a href="${zipUrl}">Download source zip from this instance</a>\nTextpile is open source, you can run your own site for free.`;
 }
 ```
 
@@ -362,7 +362,7 @@ ls public/assets/ 2>/dev/null || echo "Assets dir doesn't exist (expected)"
    - Should show: "This site runs Textpile {version} · GitHub repo"
 
 2. **Load homepage with PUBLIC_SOURCE_ZIP=true**
-   - Should show: "This site runs Textpile {version} · GitHub repo · Download source zip from this instance"
+   - Should show: "This site runs Textpile {version} · GitHub repo · Download source zip from this instance\nTextpile is open source, you can run your own site for free."
 
 3. **Load homepage with SOFTWARE_NAME="MyPaste"**
    - Should show: "This site runs MyPaste {version} · GitHub repo"
