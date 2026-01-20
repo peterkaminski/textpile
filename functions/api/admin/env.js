@@ -38,6 +38,12 @@ export async function onRequestGet({ env, request }) {
           value: env.ADMIN_EMAIL || "(unset)",
           possibleValues: "Email address",
           description: "Contact email shown in footer"
+        },
+        {
+          name: "SOFTWARE_NAME",
+          value: env.SOFTWARE_NAME || "(unset)",
+          possibleValues: "Any string",
+          description: "Software name displayed in footer (for fork rebranding)"
         }
       ]
     },
@@ -89,6 +95,17 @@ export async function onRequestGet({ env, request }) {
           value: env.COPY_TITLE_AND_URL_FORMAT || "(unset)",
           possibleValues: "plain, markdown, multiline, or custom template",
           description: "Format for Copy Title and URL button"
+        }
+      ]
+    },
+    {
+      category: "Build & Deployment",
+      variables: [
+        {
+          name: "PUBLIC_SOURCE_ZIP",
+          value: env.PUBLIC_SOURCE_ZIP || "(unset)",
+          possibleValues: "true, false (or unset)",
+          description: "Generate downloadable source zip during build"
         }
       ]
     }
