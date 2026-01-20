@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <title>Not Found</title>
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <header>
+      <a id="instance-name" class="instance-name" href="/">Textpile</a>
+      <div class="actions">
+        <a href="/">Home</a>
+        <span class="separator" aria-hidden="true">&middot;</span>
+        <a href="/about">About</a>
+        <span class="separator" aria-hidden="true">&middot;</span>
+        <a href="/add">Add Post</a>
+      </div>
+    </header>
+
+    <h1>Page Not Found</h1>
+
+    <div id="error-content">
+      <p>The page you're looking for doesn't exist.</p>
+      <p><a href="/">Return to home page</a></p>
+    </div>
+
+    <script type="module">
+      import { initPage } from '/textpile-utils.js';
+
+      // Initialize page (load config, apply community name, update page title, add footer)
+      await initPage({ pageTitle: "Not Found" });
+
+      // Check if this is a missing source zip file
+      const path = window.location.pathname;
+      const isSourceZip = path.match(/^\/assets\/textpile-[\d.]+(-[a-zA-Z0-9]+)?-source\.zip$/);
+
+      if (isSourceZip) {
+        // Show specific instructions for missing source zip
+        document.getElementById('error-content').innerHTML = `
+          <h2>Source Zip Not Found</h2>
+          <p>The source code download is enabled (<code>PUBLIC_SOURCE_ZIP=true</code>), but the zip file wasn't built.</p>
+
+          <h3>How to Fix This</h3>
+          <p>In your Cloudflare Pages project settings:</p>
+          <ol>
+            <li>Go to <strong>Settings → Builds & deployments</strong></li>
+            <li>Set <strong>Build command</strong> to: <code>npm run build</code></li>
+            <li>Click <strong>Save</strong></li>
+            <li>Go to <strong>Deployments</strong> tab</li>
+            <li>Click <strong>Retry deployment</strong> on the latest deployment</li>
+          </ol>
+
+          <p>After the build completes, the source zip will be available for download.</p>
+
+          <p>Read <a href="https://github.com/peterkaminski/textpile/blob/main/INSTALLATION.md">INSTALLATION.md</a> for more information.</p>
+
+          <p><a href="/">Return to home page</a></p>
+        `;
+      }
+    </script>
+  </body>
+</html>
