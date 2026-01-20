@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.2] - 2026-01-20
+
+### Improved
+- **Admin Page Loading UX**
+  - Added loading cursor (wait/spinner) during admin page data fetch
+  - Cursor changes to 'wait' immediately on login, restores to 'default' after loading
+  - Improved perceived responsiveness during ~2 second load time
+  - Optimized data loading with parallel API requests via `Promise.all()`
+
+### Added
+- **Wishlist Item:** Admin page performance optimization proposals
+  - Documented potential approaches: combined endpoint, pagination, caching, KV optimization
+  - Marked as low priority since current UX is acceptable with loading cursor
+
 ## [1.0.1] - 2026-01-20
 
 ### Added
