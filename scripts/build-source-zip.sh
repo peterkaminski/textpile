@@ -7,9 +7,28 @@ if [[ "${PUBLIC_SOURCE_ZIP:-}" != "true" ]]; then
   exit 0
 fi
 
+
 # Read version from public/version.js (source of truth)
-VERSION=$(node -p "const fs=require('fs'); const content=fs.readFileSync('public/version.js','utf-8'); const match=content.match(/TEXTPILE_VERSION\s*=\s*[\"']([^\"']+)[\"']/); if(!match){console.error('Error: Could not parse version from public/version.js'); process.exit(1);} match[1]")
-[[ -n "$VERSION" ]] || { echo "Error: Could not extract version"; exit 1; }
+[[ ! -f public/version.js ]] && {
+    echo "Error: public/version.js not found" >&2
+    exit 1
+}
+
+VERSION=$(node -p "
+const fs = require('fs');
+const content = fs.readFileSync('public/version.js', 'utf-8');
+const match = content.match(/TEXTPILE_VERSION\s*=\s*[\"']([^\"']+)[\"']/);
+if (!match) process.exit(1);
+match[1]
+") || {
+    echo "Error: Could not parse TEXTPILE_VERSION from public/version.js" >&2
+    exit 1
+}
+
+[[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-].+)?$ ]] || {
+    echo "Error: Invalid version format: '$VERSION'" >&2
+    exit 1
+}
 
 OUTDIR="public/assets"
 OUTFILE="${OUTDIR}/textpile-${VERSION}-source.zip"
