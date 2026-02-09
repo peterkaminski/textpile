@@ -34,8 +34,16 @@
 
       <label>
         Body (required)
+        <div class="editor-tabs" role="tablist" aria-label="Post body mode">
+          <button type="button" id="tab-edit" class="editor-tab-btn active" role="tab" aria-selected="true" aria-controls="editor-pane">
+            Edit
+          </button>
+          <button type="button" id="tab-preview" class="editor-tab-btn" role="tab" aria-selected="false" aria-controls="preview-panel">
+            Preview
+          </button>
+        </div>
         <div id="editor-preview-layout" class="editor-preview-layout">
-          <div>
+          <div id="editor-pane">
             <textarea id="body" name="body" placeholder="Paste Markdown or plain text here" required></textarea>
             <div class="small" id="size-info"></div>
           </div>
@@ -51,15 +59,6 @@
           </section>
         </div>
       </label>
-
-      <div class="actions preview-actions">
-        <button type="button" id="preview-toggle-btn">Show Markdown preview</button>
-        <div id="preview-mode-controls" class="preview-mode-controls" hidden>
-          <button type="button" class="preview-mode-btn active" data-mode="split" aria-pressed="true">Split</button>
-          <button type="button" class="preview-mode-btn" data-mode="edit" aria-pressed="false">Edit only</button>
-          <button type="button" class="preview-mode-btn" data-mode="preview" aria-pressed="false">Preview only</button>
-        </div>
-      </div>
 
       <label>
         Retention period (required)
@@ -113,15 +112,14 @@
       const btn = document.getElementById("btn");
       const bodyField = document.getElementById("body");
       const sizeInfo = document.getElementById("size-info");
-      const previewToggleBtn = document.getElementById("preview-toggle-btn");
-      const previewModeControls = document.getElementById("preview-mode-controls");
-      const previewModeButtons = Array.from(document.querySelectorAll(".preview-mode-btn"));
+      const tabEdit = document.getElementById("tab-edit");
+      const tabPreview = document.getElementById("tab-preview");
       const editorPreviewLayout = document.getElementById("editor-preview-layout");
+      const editorPane = document.getElementById("editor-pane");
       const previewPanel = document.getElementById("preview-panel");
       const previewContent = document.getElementById("preview-content");
 
-      let previewEnabled = false;
-      let previewMode = "split";
+      let editorMode = "edit";
       let previewLoadPromise = null;
       let previewRenderTimer = null;
 
@@ -147,22 +145,16 @@
         }
       }
 
-      function updatePreviewModeButtons() {
-        previewModeButtons.forEach((button) => {
-          const active = button.dataset.mode === previewMode;
-          button.classList.toggle("active", active);
-          button.setAttribute("aria-pressed", active ? "true" : "false");
-        });
-      }
-
       function updatePreviewLayout() {
-        editorPreviewLayout.classList.toggle("split", previewEnabled && previewMode === "split");
-        editorPreviewLayout.classList.toggle("edit-only", previewEnabled && previewMode === "edit");
-        editorPreviewLayout.classList.toggle("preview-only", previewEnabled && previewMode === "preview");
-        previewPanel.hidden = !previewEnabled;
-        previewModeControls.hidden = !previewEnabled;
-        previewToggleBtn.textContent = previewEnabled ? "Hide Markdown preview" : "Show Markdown preview";
-        updatePreviewModeButtons();
+        const inPreview = editorMode === "preview";
+        editorPane.hidden = inPreview;
+        previewPanel.hidden = !inPreview;
+
+        tabEdit.classList.toggle("active", !inPreview);
+        tabEdit.setAttribute("aria-selected", inPreview ? "false" : "true");
+
+        tabPreview.classList.toggle("active", inPreview);
+        tabPreview.setAttribute("aria-selected", inPreview ? "true" : "false");
       }
 
       function loadMarked() {
@@ -196,7 +188,7 @@
       }
 
       async function renderPreviewNow() {
-        if (!previewEnabled) return;
+        if (editorMode !== "preview") return;
 
         const raw = bodyField.value;
         if (!raw.trim()) {
@@ -213,7 +205,7 @@
       }
 
       function renderPreviewDebounced() {
-        if (!previewEnabled) return;
+        if (editorMode !== "preview") return;
         clearTimeout(previewRenderTimer);
         previewRenderTimer = setTimeout(() => {
           renderPreviewNow();
@@ -224,20 +216,15 @@
       bodyField.addEventListener("input", renderPreviewDebounced);
       updateSizeInfo();
 
-      previewToggleBtn.addEventListener("click", () => {
-        previewEnabled = !previewEnabled;
+      tabEdit.addEventListener("click", () => {
+        editorMode = "edit";
         updatePreviewLayout();
-        if (previewEnabled) {
-          renderPreviewNow();
-        }
       });
 
-      previewModeButtons.forEach((button) => {
-        button.addEventListener("click", () => {
-          previewMode = button.dataset.mode || "split";
-          updatePreviewLayout();
-          renderPreviewNow();
-        });
+      tabPreview.addEventListener("click", () => {
+        editorMode = "preview";
+        updatePreviewLayout();
+        renderPreviewNow();
       });
 
       updatePreviewLayout();

@@ -7,7 +7,7 @@
 1. Click the "Add Post" link on the homepage
 2. Enter an optional title (max 140 characters)
 3. Paste your content in Markdown or plain text (max 1 MB by default)
-4. Optional: click **Show Markdown preview** if you want to check formatting before publishing
+4. Optional: click the **Preview** tab if you want to check formatting before publishing
 5. Select a retention period (how long before the post expires)
 6. If required, enter the shared add post password
 7. Click "Publish"
