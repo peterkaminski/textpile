@@ -11,6 +11,7 @@ a:hover { text-decoration: underline; }
 .small { font-size: 13px; opacity: .8; }
 textarea, input, select { width: 100%; box-sizing: border-box; font: inherit; padding: 10px 12px; border-radius: 10px; border: 1px solid rgba(127,127,127,.35); background: transparent; }
 textarea { min-height: 260px; }
+#body { border-radius: 0 10px 10px 10px; }
 button { font: inherit; padding: 10px 14px; border-radius: 10px; border: 1px solid rgba(127,127,127,.35); background: rgba(127,127,127,.12); cursor: pointer; }
 button:hover { background: rgba(127,127,127,.18); }
 .row { display: grid; gap: 10px; }
@@ -20,18 +21,18 @@ button:hover { background: rgba(127,127,127,.18); }
   gap: 6px;
   align-items: flex-end;
   margin-bottom: 0;
-  padding-left: 6px;
 }
 .editor-tab-btn {
   font-size: 12px;
   line-height: 1.2;
   padding: 6px 12px 5px;
   border-radius: 10px 10px 0 0;
-  border: 1px solid rgba(127,127,127,.4);
+  border: 1px solid rgba(127,127,127,.35);
   border-bottom-color: rgba(127,127,127,.35);
   background: rgba(127,127,127,.08);
   position: relative;
-  top: 1px;
+  top: 2px;
+  z-index: 1;
 }
 .editor-tab-btn:hover {
   background: rgba(127,127,127,.14);
@@ -40,15 +41,13 @@ button:hover { background: rgba(127,127,127,.18); }
   font-weight: 600;
   background: transparent;
   border-bottom-color: transparent;
+  z-index: 2;
 }
 .editor-preview-layout {
   display: grid;
   gap: 10px;
-  border-top: 1px solid rgba(127,127,127,.35);
-  padding-top: 12px;
 }
 .preview-panel { margin: 0; }
-.preview-header { display: grid; gap: 4px; margin-bottom: 10px; }
 .preview-content { min-height: 260px; overflow: auto; }
 
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
