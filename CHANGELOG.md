@@ -7,6 +7,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.1] - 2026-02-09
+
+### Changed
+- Hardened source-zip build version parsing in `scripts/build-source-zip.sh`:
+  - explicit check that `public/version.js` exists
+  - clearer parse-failure error when `TEXTPILE_VERSION` cannot be extracted
+  - more readable Node parsing snippet
+
+### Fixed
+- Version format validation now uses SemVer 2.0.0-compatible matching, including:
+  - prerelease identifiers (for example `1.2.3-rc.1`)
+  - build metadata (for example `1.2.3+build.5`)
+  - proper rejection of malformed versions
+
 ## [1.1.0] - 2026-02-09
 
 ### Added
