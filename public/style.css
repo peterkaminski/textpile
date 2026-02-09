@@ -15,10 +15,38 @@ button { font: inherit; padding: 10px 14px; border-radius: 10px; border: 1px sol
 button:hover { background: rgba(127,127,127,.18); }
 .row { display: grid; gap: 10px; }
 .actions { display: flex; gap: 0; align-items: center; }
-.editor-tabs { display: flex; gap: 8px; margin-bottom: 8px; }
-.editor-tab-btn { padding: 6px 12px; }
-.editor-tab-btn.active { font-weight: 600; }
-.editor-preview-layout { display: grid; gap: 10px; }
+.editor-tabs {
+  display: flex;
+  gap: 6px;
+  align-items: flex-end;
+  margin-bottom: 0;
+  padding-left: 6px;
+}
+.editor-tab-btn {
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 6px 12px 5px;
+  border-radius: 10px 10px 0 0;
+  border: 1px solid rgba(127,127,127,.4);
+  border-bottom-color: rgba(127,127,127,.35);
+  background: rgba(127,127,127,.08);
+  position: relative;
+  top: 1px;
+}
+.editor-tab-btn:hover {
+  background: rgba(127,127,127,.14);
+}
+.editor-tab-btn.active {
+  font-weight: 600;
+  background: transparent;
+  border-bottom-color: transparent;
+}
+.editor-preview-layout {
+  display: grid;
+  gap: 10px;
+  border-top: 1px solid rgba(127,127,127,.35);
+  padding-top: 12px;
+}
 .preview-panel { margin: 0; }
 .preview-header { display: grid; gap: 4px; margin-bottom: 10px; }
 .preview-content { min-height: 260px; overflow: auto; }
