@@ -25,8 +25,10 @@ match[1]
     exit 1
 }
 
-[[ "$VERSION" =~ ^[0-9]+\.[0-9]+\.[0-9]+([.-].+)?$ ]] || {
-    echo "Error: Invalid version format: '$VERSION'" >&2
+# SemVer 2.0.0: MAJOR.MINOR.PATCH with optional prerelease and build metadata.
+SEMVER_RE='^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-((0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*)(\.(0|[1-9][0-9]*|[0-9A-Za-z-]*[A-Za-z-][0-9A-Za-z-]*))*))?(\+([0-9A-Za-z-]+(\.[0-9A-Za-z-]+)*))?$'
+[[ "$VERSION" =~ $SEMVER_RE ]] || {
+    echo "Error: Invalid SemVer format: '$VERSION'" >&2
     exit 1
 }
 
