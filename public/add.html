@@ -49,7 +49,7 @@
           </div>
 
           <section id="preview-panel" class="card preview-panel" hidden>
-            <article id="preview-content" class="preview-content small">
+            <article id="preview-content" class="preview-content empty">
               Preview is empty.
             </article>
           </section>
@@ -189,9 +189,11 @@
         const raw = bodyField.value;
         if (!raw.trim()) {
           previewContent.textContent = "Preview is empty.";
+          previewContent.classList.add("empty");
           return;
         }
 
+        previewContent.classList.remove("empty");
         try {
           const marked = await loadMarked();
           previewContent.innerHTML = marked.parse(raw);

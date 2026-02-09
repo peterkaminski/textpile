@@ -31,7 +31,7 @@ button:hover { background: rgba(127,127,127,.18); }
   border-bottom-color: rgba(127,127,127,.35);
   background: rgba(127,127,127,.08);
   position: relative;
-  top: 2px;
+  top: 1px;
   z-index: 1;
 }
 .editor-tab-btn:hover {
@@ -47,8 +47,9 @@ button:hover { background: rgba(127,127,127,.18); }
   display: grid;
   gap: 10px;
 }
-.preview-panel { margin: 0; }
+.preview-panel { margin: 0; border-radius: 0 12px 12px 12px; }
 .preview-content { min-height: 260px; overflow: auto; }
+.preview-content.empty { opacity: 0.5; }
 
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
 pre { overflow: auto; padding: 12px; border-radius: 12px; border: 1px solid rgba(127,127,127,.25); }
