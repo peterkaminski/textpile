@@ -47,8 +47,18 @@ button:hover { background: rgba(127,127,127,.18); }
   display: grid;
   gap: 10px;
 }
-.preview-panel { margin: 0; border-radius: 0 12px 12px 12px; }
-.preview-content { min-height: 260px; max-height: 260px; overflow: auto; resize: vertical; }
+.preview-panel { margin: 0; padding: 0; border: none; background: none; }
+.preview-content {
+  display: block;
+  min-height: 260px;
+  max-height: 260px;
+  overflow: auto;
+  resize: vertical;
+  border: 1px solid rgba(127,127,127,.35);
+  border-radius: 0 12px 12px 12px;
+  padding: 14px 16px;
+  box-sizing: border-box;
+}
 .preview-content.empty { opacity: 0.5; }
 
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
