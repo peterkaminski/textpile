@@ -48,7 +48,7 @@ button:hover { background: rgba(127,127,127,.18); }
   gap: 10px;
 }
 .preview-panel { margin: 0; border-radius: 0 12px 12px 12px; }
-.preview-content { min-height: 260px; overflow: auto; }
+.preview-content { min-height: 260px; max-height: 260px; overflow: auto; resize: vertical; }
 .preview-content.empty { opacity: 0.5; }
 
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
