@@ -7,10 +7,11 @@
 1. Click the "Add Post" link on the homepage
 2. Enter an optional title (max 140 characters)
 3. Paste your content in Markdown or plain text (max 1 MB by default)
-4. Select a retention period (how long before the post expires)
-5. If required, enter the shared add post password
-6. Click "Publish"
-7. You'll be redirected to your published post
+4. Optional: click **Show Markdown preview** if you want to check formatting before publishing
+5. Select a retention period (how long before the post expires)
+6. If required, enter the shared add post password
+7. Click "Publish"
+8. You'll be redirected to your published post
 
 ### Important Notes for Authors
 

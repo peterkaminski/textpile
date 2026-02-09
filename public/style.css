@@ -15,6 +15,25 @@ button { font: inherit; padding: 10px 14px; border-radius: 10px; border: 1px sol
 button:hover { background: rgba(127,127,127,.18); }
 .row { display: grid; gap: 10px; }
 .actions { display: flex; gap: 0; align-items: center; }
+.preview-actions { gap: 8px; flex-wrap: wrap; }
+.preview-mode-controls { display: flex; gap: 6px; flex-wrap: wrap; }
+.preview-mode-btn { padding: 6px 10px; }
+.preview-mode-btn.active { font-weight: 600; }
+.editor-preview-layout { display: grid; gap: 10px; }
+.editor-preview-layout.edit-only .preview-panel { display: none; }
+.editor-preview-layout.preview-only textarea,
+.editor-preview-layout.preview-only #size-info { display: none; }
+.preview-panel { margin: 0; }
+.preview-header { display: grid; gap: 4px; margin-bottom: 10px; }
+.preview-content { min-height: 260px; overflow: auto; }
+
+@media (min-width: 980px) {
+  .editor-preview-layout.split {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    align-items: start;
+  }
+}
+
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
 pre { overflow: auto; padding: 12px; border-radius: 12px; border: 1px solid rgba(127,127,127,.25); }
 .site-footer { margin-top: 48px; text-align: center; }
