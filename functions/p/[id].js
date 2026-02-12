@@ -371,7 +371,7 @@ export async function onRequestGet({ params, env, request }) {
         : 'Post from ' + input.instanceName;
 
       if (input.format === 'markdown') return '[' + resolvedTitle + '](' + input.url + ')';
-      if (input.format === 'multiline') return '"' + resolvedTitle + '"\n' + input.url;
+      if (input.format === 'multiline') return '"' + resolvedTitle + '"\\n' + input.url;
       if (input.format === 'plain') return resolvedTitle + ' - ' + input.url;
 
       if (isTemplateString(input.format) && isValidTemplate(input.format)) {
