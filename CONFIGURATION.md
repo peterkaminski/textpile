@@ -535,7 +535,7 @@ PUBLIC_SOURCE_ZIP="true"
 3. Zip includes all git-tracked files (excludes node_modules, .git, etc.)
 
 **Build requirement:**
-Cloudflare Pages must have a build command configured (usually `npm run build`). If no build command is set, the zip will not be generated even if this variable is set to `"true"`.
+Cloudflare Pages build command must be set to `npm run build` (see INSTALLATION.md). The zip is generated automatically during the build when this variable is `"true"`.
 
 ---
 
