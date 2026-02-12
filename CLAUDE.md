@@ -109,7 +109,7 @@ wrangler pages dev public/ --kv=KV
 2. **Create Pages Project** from GitHub repo
 3. **Build Settings**:
    - Framework preset: **None**
-   - Build command: *(blank)*
+   - Build command: `npm run build`
    - Output directory: `public`
 4. **Add KV Binding**:
    - Settings → Bindings → KV Namespace

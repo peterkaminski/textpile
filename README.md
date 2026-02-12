@@ -53,7 +53,7 @@ This design choice dramatically lowers operational burden and makes clear that i
 - **Cloudflare Pages**: Static asset hosting
 - **Cloudflare Pages Functions**: Server-side API endpoints
 - **Cloudflare KV**: Key-value storage with automatic TTL expiration
-- **marked.js**: Client-side Markdown rendering (CDN)
+- **marked.js**: Markdown rendering (server-side for posts/RSS, client-side CDN for preview)
 
 ## Documentation
 

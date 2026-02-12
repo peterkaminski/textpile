@@ -39,11 +39,9 @@ cd textpile
 4. Select your Textpile repository
 5. Configure build settings:
    - **Framework preset**: None
-   - **Build command**: `npm run build` (optional - only needed if enabling PUBLIC_SOURCE_ZIP feature, see step 5)
+   - **Build command**: `npm run build`
    - **Build output directory**: `public`
 6. Click **Save and Deploy**
-
-**Note**: The build command is optional. Leave it blank unless you plan to enable the public source zip download feature (PUBLIC_SOURCE_ZIP environment variable).
 
 ### 4. Bind the KV Namespace
 
@@ -206,7 +204,6 @@ Enable downloadable source code zip for visitors (helps Textpile spread):
 
 **Requirements:**
 - Build command must be set to `npm run build` (see step 3)
-- If build command is not configured, this feature will not work
 
 **When to enable:**
 - Running an open, public instance
@@ -306,6 +303,17 @@ Cloudflare Pages provides built-in analytics:
 - **Logs** available via `wrangler pages deployment tail`
 
 ## Troubleshooting
+
+### Build fails with "Could not resolve marked"
+
+**Symptom**: Deployment fails with esbuild error `Could not resolve "marked"` in `feed.xml.js` or `p/[id].js`.
+
+**Cause**: Build command is blank or not set. Cloudflare Pages skips dependency installation when no build command is specified.
+
+**Solution**: Set the build command to `npm run build` in Cloudflare Pages settings:
+1. Go to Settings → Builds & deployments → Edit configuration
+2. Set **Build command** to `npm run build`
+3. Redeploy
 
 ### 500 errors after deployment (Most Common)
 
