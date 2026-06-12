@@ -72,6 +72,12 @@ button:hover { background: rgba(127,127,127,.18); }
 .pin-indicator {
   font-size: 14px;
 }
+/* The global header rule is for the site header (name left, nav right);
+   the post page's inner article header stacks title above metadata. */
+.post-content header {
+  display: block;
+  margin-bottom: 0;
+}
 .post-meta-list {
   display: grid;
   grid-template-columns: auto 1fr;
