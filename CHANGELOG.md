@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.3] - 2026-06-11
+
+### Fixed
+- Restored the compact post-card appearance on the homepage, lost in the v1.2.0 semantic-HTML redesign: post titles are body-sized links again (not bold headings), the pin badge precedes the title, and Created/Expires/ID metadata renders as a single line instead of a label/value grid. The semantic `<h2>`/`<dl>` markup is kept; only the styling changed.
+
 ## [1.2.2] - 2026-06-11
 
 ### Removed
