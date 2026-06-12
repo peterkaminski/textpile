@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Removed
+- Removed `wrangler.toml` (added in v1.2.1). Because it contained `pages_build_output_dir`, Cloudflare Pages treated it as the source of truth for project configuration, superseding all dashboard-configured environment variables and bindings on existing instances. The "Could not resolve marked" build failure is fully fixed by setting the build command to `npm run build` in dashboard build settings (see INSTALLATION.md); the file was not needed.
+
+### Upgrade note for operators who deployed v1.2.1
+If you deployed v1.2.1, your dashboard-configured environment variables and KV binding were superseded by the (empty) `wrangler.toml`. After upgrading to this version and redeploying, dashboard-managed configuration takes effect again. If your dashboard values were lost, recover the display-related ones from a pre-v1.2.1 deployment's unique URL via `GET /api/config`, and re-enter secrets (`ADMIN_TOKEN`, `ADD_POST_PASSWORD`) from your own records. Verify your KV binding (Settings → Bindings) is still present.
+
 ## [1.2.1] - 2026-06-11
 
 ### Fixed
