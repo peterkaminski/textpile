@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.1] - 2026-06-11
+
+### Fixed
+- Long lines in code blocks (`<pre>`) now wrap instead of forcing horizontal scrolling, matching the plain-text view; unbreakable strings such as long URLs also wrap
+- Fixed SyntaxError that broke all buttons (copy, download, view toggle) on post pages, caused by an unescaped `\n` in a server-side template literal
+- Fixed Cloudflare Pages "Could not resolve marked" build failures by adding `wrangler.toml` and requiring `npm run build` as the deployment build command
+
+### Changed
+- Installation documentation updated to require `npm run build` for deployment
+
 ## [1.2.0] - 2026-02-10
 
 ### Added
