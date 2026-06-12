@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Optional site-wide HTTP Basic Auth for private instances: set `BASIC_AUTH_USER` and `BASIC_AUTH_PASS` environment variables to require credentials on every request; disabled when unset (contributed by William L. Anderson)
+
 ## [1.2.1] - 2026-06-11
 
 ### Fixed

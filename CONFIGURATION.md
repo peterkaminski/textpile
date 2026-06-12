@@ -163,6 +163,35 @@ ADMIN_TOKEN=your-different-long-random-string
 
 ---
 
+### BASIC_AUTH_USER / BASIC_AUTH_PASS
+
+**Purpose**: Put the entire site behind HTTP Basic Auth (private instances)
+
+**Default**: Not set (site is public)
+
+**Behavior**:
+- If both are set: every request — pages, API endpoints, RSS feed, static assets — requires the username and password
+- If either is unset: feature is disabled and requests pass through unchanged
+
+**Set in**: Cloudflare Pages → Settings → Environment variables → Production
+
+```
+BASIC_AUTH_USER=your-username
+BASIC_AUTH_PASS=your-long-random-string
+```
+
+**Notes**:
+- Browsers prompt once and remember credentials for the session
+- RSS readers can authenticate with `https://user:pass@your-instance.example.com/feed.xml`
+- The middleware that enforces this runs on every request, including static assets, even when the feature is disabled — this counts toward Cloudflare Pages Functions request limits
+- Basic Auth protects reading *and* posting; `ADD_POST_PASSWORD` and `ADMIN_TOKEN` still apply on top of it
+
+**Security**:
+- Credentials are checked with timing-safe comparison
+- Use a strong random password; rotate if shared widely
+
+---
+
 ## Content Retention
 
 ### DEFAULT_RETENTION
@@ -579,6 +608,8 @@ This is the easiest way to rebrand a fork without modifying code. See CONTRIBUTI
 | `ADMIN_EMAIL` | `null` | Contact email in footer | No |
 | `ADD_POST_PASSWORD` | Not set | Anti-spam password | No |
 | `ADMIN_TOKEN` | Not set | Admin access token | No |
+| `BASIC_AUTH_USER` | Not set | Basic Auth username (with `BASIC_AUTH_PASS`) | No |
+| `BASIC_AUTH_PASS` | Not set | Basic Auth password (with `BASIC_AUTH_USER`) | No |
 | `DEFAULT_RETENTION` | `"1month"` | Default retention period | No |
 | `DATE_FORMAT` | `"medium"` | Date display format | No |
 | `TIME_FORMAT` | `"short"` | Time display format | No |
