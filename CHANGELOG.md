@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.4] - 2026-06-11
+
+### Fixed
+- Post page title now stacks above the Created/Expires/ID metadata line again; the site-header flex layout had been applying to the post page's inner article header introduced in v1.2.0, placing them side by side
+
 ## [1.2.3] - 2026-06-11
 
 ### Fixed
