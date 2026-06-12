@@ -12,6 +12,7 @@ Textpile is a temporary reading surface for communities - not an archive. It's d
 - **Zero maintenance**: No databases, no builds, no cron jobs, no manual review
 - **Instant publishing**: Add Markdown or plain text posts, get a URL immediately
 - **Optional access control**: Optional shared add post password to prevent spam
+- **Optional private instances**: Site-wide HTTP Basic Auth via `BASIC_AUTH_USER`/`BASIC_AUTH_PASS` environment variables
 - **Admin interface**: Web-based admin panel for post management, export/import, and storage monitoring
 - **RSS feed**: RSS 2.0 feed for following posts in your feed reader
 - **Pin posts**: Highlight important posts at the top of the homepage
