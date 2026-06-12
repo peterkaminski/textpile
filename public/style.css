@@ -104,7 +104,7 @@ button:hover { background: rgba(127,127,127,.18); }
 .preview-content.empty { opacity: 0.5; }
 
 hr { border: 0; border-top: 1px solid rgba(127,127,127,.25); margin: 18px 0; }
-pre { overflow: auto; padding: 12px; border-radius: 12px; border: 1px solid rgba(127,127,127,.25); }
+pre { overflow: auto; white-space: pre-wrap; overflow-wrap: break-word; padding: 12px; border-radius: 12px; border: 1px solid rgba(127,127,127,.25); }
 .site-footer { margin-top: 48px; text-align: center; }
 .info-banner { padding: 0.5em 16px; margin: 12px 0; border-radius: 12px; background: rgba(59, 130, 246, 0.1); border: 1px solid rgba(59, 130, 246, 0.3); font-size: 13px; opacity: .75; }
 .info-banner.warning { background: rgba(251, 191, 36, 0.1); border: 1px solid rgba(251, 191, 36, 0.4); }
