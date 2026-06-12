@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.2.2] - 2026-06-11
+
 ### Removed
 - Removed `wrangler.toml` (added in v1.2.1). Because it contained `pages_build_output_dir`, Cloudflare Pages treated it as the source of truth for project configuration, superseding all dashboard-configured environment variables and bindings on existing instances. The "Could not resolve marked" build failure is fully fixed by setting the build command to `npm run build` in dashboard build settings (see INSTALLATION.md); the file was not needed.
 
