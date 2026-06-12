@@ -81,17 +81,17 @@
         const pinBadge = item.pinned ? '<span class="pin-indicator" aria-label="Pinned post" title="Pinned">📌</span>' : '';
 
         const expiresHtml = expiration
-          ? `<dt>Expires</dt><dd><time datetime="${escapeHtml(item.expiresAt)}">${escapeHtml(expiration.formattedDate)} (${expiration.daysRemaining} day${expiration.daysRemaining === 1 ? '' : 's'})</time></dd>`
+          ? `<dt>Expires</dt> <dd><time datetime="${escapeHtml(item.expiresAt)}">${escapeHtml(expiration.formattedDate)} (${expiration.daysRemaining} day${expiration.daysRemaining === 1 ? '' : 's'})</time></dd>`
           : '';
 
         return `
           <article class="card post-card" data-pinned="${item.pinned ? 'true' : 'false'}">
-            <h2 class="post-title"><a href="${url}">${postTitle}</a> ${pinBadge}</h2>
+            <h2 class="post-title">${pinBadge}<a href="${url}">${postTitle}</a></h2>
             <dl class="meta post-meta-list compact">
               <dt>Created</dt>
               <dd>${createdTime}</dd>
               ${expiresHtml}
-              <dt>ID</dt>
+              <dt class="visually-hidden">ID</dt>
               <dd>${postId}</dd>
             </dl>
           </article>
